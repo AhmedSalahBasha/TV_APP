@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // Your code to run since DOM is loaded and ready
     setTimeout(function(){
 
-        setVideoURL("/mpat/web/app/uploads/2018/12/rbb_quiz_video.mp4");
+        var videoURL = "/mpat/web/app/uploads/2018/12/rbb_quiz_video.mp4";
+        createVideoTemplate(videoURL);
         createTimerVideoTemplate();
         createTimerVideo();
         createToggleTrackingButtonTemplate("530px", " A");
@@ -204,7 +205,7 @@ function createTimer() {
     }, 1000);
 }
 
-function createVideoTemplate(version) {
+function createVideoTemplateOld(version) {
     var background = document.getElementById("vidcontainer");
     var videoElement = null;
     if (version == "html5") {
@@ -225,6 +226,45 @@ function createVideoTemplate(version) {
     videoElement.style.minHeight = "100%";
     videoElement.style.minWidth = "100%";
     background.appendChild(videoElement);
+}
+
+function createVideoTemplate(url) {
+    var mainContainer = document.getElementsByClassName("page-elements-container")[0];
+    var mainDiv = document.createElement("div");
+    mainDiv.classList.add("page-element");
+    mainDiv.classList.add("video-component");
+
+    var child1Div = document.createElement("div");
+    child1Div.style.left = "0px";
+    child1Div.style.top = "0px";
+    child1Div.style.width = "0px";
+    child1Div.style.height = "0px";
+    child1Div.style.position = "absolute";
+
+    var child2Div = document.createElement("div");
+    child2Div.classList.add("page-element-content");
+    child2Div.classList.add("video-content fullscreen");
+
+    var child3Div = document.createElement("div");
+    child3Div.style.position = "absolute";
+    child3Div.style.overflow = "hidden";
+    child3Div.style.width = "100%";
+    child3Div.style.height = "100#";
+    child3Div.style.display = "block";
+
+    var child4Div = document.createElement("div");
+    child4Div.classList.add("video-wrapper");
+
+    var child5Div = document.createElement("object");
+    child5Div.type = "video/mp4";
+    child5Div.data = url;
+
+    child4Div.appendChild(child5Div);
+    child3Div.appendChild(child4Div);
+    child2Div.appendChild(child3Div);
+    child1Div.appendChild(child2Div);
+    mainDiv.appendChild(child1Div);
+    mainContainer.appendChild(mainDiv);
 }
 
 function compareStartTime() {

@@ -9,14 +9,19 @@ Version: 0.1
 Template Name: Admin Panel
 */
 
-add_action("admin_menu", "addMenu");
 
+/**
+ * add new tab to the main menu once activate plugin
+ */
+add_action("admin_menu", "addMenu");
 function addMenu(){
     add_menu_page("RBB Quiz", "RBB Quiz", "administrator", "rbb-quiz", "rbbQuiz" );
     // add_submenu_page("example_options", "Option 1", "Option 1", 4, "example-option-1", "option1");
 }
 
-
+/**
+ * the main function which loading the main plugin page
+ */
 function rbbQuiz(){
     echo '<h3> Hello! This is a RBB Quiz Application!</h3>';?>
     <div class="wrap container" style="width=10%; margin-left: 205px;">
@@ -89,6 +94,7 @@ function rbbQuiz(){
     }
 }
 
+
 /**
  * Add RBB Quiz page on pulgin activation
  */
@@ -99,21 +105,33 @@ function install_rbb_pg(){
     $new_page_template = ''; //ex. template-custom.php. Leave blank if you don't want a custom page template.
     $page_check = get_page_by_title($new_page_title);
     $new_page = array(
-            'post_type' => 'page',
-            'post_title' => $new_page_title,
-            'post_content' => $new_page_content,
-            'post_status' => 'publish',
-            'post_author' => 1,
+        'post_type' => 'page',
+        'post_title' => $new_page_title,
+        'post_content' => $new_page_content,
+        'post_status' => 'publish',
+        'post_author' => 1,
     );
     if(!isset($page_check->ID)){
-            $new_page_id = wp_insert_post($new_page);
-            if(!empty($new_page_template)){
-                    update_post_meta($new_page_id, '_wp_page_template', $new_page_template);
-            }
+        $new_page_id = wp_insert_post($new_page);
+        if(!empty($new_page_template)){
+                update_post_meta($new_page_id, '_wp_page_template', $new_page_template);
+        }
     }
 }
 register_activation_hook(__FILE__, 'install_rbb_pg');
 
+
+/**
+ * Add RBB Custom Template to our newly created page
+ */
+add_filter( 'page_template', 'wp_page_template' );
+function wp_page_template( $page_template )
+{
+    if ( is_page($page = 'RBB Quiz') ) {
+        $page_template = plugin_dir_path( __FILE__ ) . 'rbb-page.php';
+    }
+    return $page_template;
+}
 
 
 /**
@@ -140,6 +158,7 @@ function create_rbb_quiz_table() {
 	}
 }
 register_activation_hook(__FILE__,'create_rbb_quiz_table');
+
 
 /**
  * remove rbb_quiz_questions table when deactivate plugin
