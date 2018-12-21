@@ -20,11 +20,31 @@ function addMenu(){
 }
 
 /**
+ * function to add Bootstrap core style link to the header
+ */
+function add_bootstrap_style() {
+    echo '<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
+}
+add_action('wp_head', 'add_bootstrap_style');
+add_action('admin_head', 'add_bootstrap_style');
+
+
+/**
+ * function to add Bootstrap core scripts to the footer
+ */
+function add_bootstrap_script() {
+    echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
+    echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>';
+}
+add_action('wp_footer', 'add_bootstrap_script');
+add_action('admin_footer', 'add_bootstrap_script');
+
+/**
  * the main function which loading the main plugin page
  */
 function rbbQuiz(){
-    echo '<h3> Hello! This is a RBB Quiz Application!</h3>';?>
-    <div class="wrap container" style="width=10%; margin-left: 205px;">
+    ?>
+    <div class="wrap container">
         <div id="primary" class="content-area">
             <main id="main" class="site-main" role="main">
                 <form method="post">
@@ -93,6 +113,30 @@ function rbbQuiz(){
         die;
     }
 }
+
+
+/**
+ * function to select the question data from database and send this data to another JS file
+ */
+function get_question_data() {
+    if( is_page(179) || is_page('RBB Quiz')) { //13   
+        echo "<p id='current'></p>";
+        global $wpdb;
+        // reading data from rbb_quiz_questions table in database
+        $start_time_col = $wpdb->get_col("SELECT start_time FROM rbb_quiz_questions");
+        $end_time_col = $wpdb->get_col("SELECT end_time FROM rbb_quiz_questions");
+        $cost_col = $wpdb->get_col("SELECT cost FROM rbb_quiz_questions");
+        wp_enqueue_script('my-js', get_template_directory_uri() . 'script.js'); 
+        wp_localize_script('my-js', 'passedObject', array(
+                'start_time_col' => $start_time_col,
+                'end_time_col' => $end_time_col,
+                'cost_col' => $cost_col
+            )
+        );
+    } 
+}
+add_action('wp_footer', 'get_question_data');
+//add_action('admin_footer', 'get_question_data');
 
 
 /**
