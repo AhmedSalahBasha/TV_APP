@@ -15,8 +15,31 @@ Template Name: Admin Panel
  */
 add_action("admin_menu", "addMenu");
 function addMenu(){
-    add_menu_page("RBB Quiz", "RBB Quiz", "administrator", "rbb-quiz", "rbbQuiz" );
-    // add_submenu_page("example_options", "Option 1", "Option 1", 4, "example-option-1", "option1");
+    add_menu_page(
+        "RBB Quiz",         // page title
+        "RBB Quiz",         // menu title
+        "administrator",    // capability
+        "rbb-quiz",         // menu slug
+        "rbbQuiz"           // callback function
+    );
+
+    add_submenu_page(
+        "rbb-quiz",         // parent slug
+        "Questions Panel",     // page title
+        "Questions Panel",     // menu title
+        "administrator",    // capability
+        "questions-page",      // menu slug
+        "questionsPage"        // callback function
+    );
+
+    add_submenu_page(
+        "rbb-quiz",         // parent slug
+        "Design Panel",     // page title
+        "Design Panel",     // menu title
+        "administrator",    // capability
+        "design-page",      // menu slug
+        "designPage"        // callback function
+    );
 }
 
 /**
@@ -39,49 +62,23 @@ function add_bootstrap_script() {
 add_action('wp_footer', 'add_bootstrap_script');
 add_action('admin_footer', 'add_bootstrap_script');
 
+
 /**
  * the main function which loading the main plugin page
  */
 function rbbQuiz(){
-    ?>
-    <div class="wrap container">
-        <div id="primary" class="content-area">
-            <main id="main" class="site-main" role="main">
-                <form method="post">
-                    <div class="form-group">
-                        <label for="number">Question Number</label>
-                        <input type="number" class="form-control" name="number" id="number" placeholder="Question Number">
-                    </div>
-                    <div class="form-group">
-                        <label for="correct">Correct Answer</label>
-                        <div>
-                            <input type="radio" id="ans1" name="correct_ans" value="A">A<br>
-                            <input type="radio" id="ans2" name="correct_ans" value="B">B<br>
-                            <input type="radio" id="ans3" name="correct_ans" value="C">C<br>
-                            <input type="radio" id="ans4" name="correct_ans" value="D">D
-                        </div>
-                    </div>
-                    <br/>
-                    <div class="form-group">
-                        <label for="start-time">Start Time</label>
-                        <input type="number" class="form-control" name="start_time" id="start-time" placeholder="Start Time in minutes">
-                    </div>
-                    <div class="form-group">
-                        <label for="end-time">End Time</label>
-                        <input type="number" class="form-control" name="end_time" id="end-time" placeholder="End Time in minutes">
-                    </div>
-                    <div class="form-group">
-                        <label for="cost">Score</label>
-                        <input type="number" class="form-control" name="cost" id="cost" placeholder="Score">
-                    </div>
-                    <input type="submit" name="btnSubmit" value="Submit Question" class="btn btn-primary">
-                    <button type="submit" class="btn btn-success" hidden>Finish</button>
-                </form>
-            </main><!-- #main -->
-        </div><!-- #primary -->
-    </div><!-- .wrap -->
-    <!--=============================================================-->
-    <?php
+    echo '<h1>Welcome in RBB Quiz Plugin</h1>';
+}
+
+
+/**
+ * loading the questions form and handel the submission 
+ */
+function questionsPage() {
+    $html_form = plugin_dir_path( __FILE__ ) . "/includes/templates/add-question-form.html";
+    if ( file_exists( $html_form ) )
+        require $html_form;
+
     if (isset($_POST['btnSubmit'])) {
         global $wpdb;
         $number = $_POST['number'];
@@ -104,14 +101,22 @@ function rbbQuiz(){
             if ($rowResult == 1) {
                 echo '<h2>Form has been submitted successfully!</h2>';
             } else {
-                wp_die("<h2>Something is NOT correct!!</h2>");
+                wp_die("<h2>Error Form Submission!</h2>");
             }
         }
         catch(Exception $e) {
-            echo '<h2>Error Form Submission! \\n Message: ',  $e->getMessage(), '</h2>', "\n";
+            echo '<h2>Connection Error! \\n Error Message: ',  $e->getMessage(), '</h2>', "\n";
         }
         die;
     }
+}
+
+
+/**
+ * loading the design page
+ */
+function designPage() {
+    echo '<h1>Design Page</h1>';
 }
 
 
@@ -126,7 +131,7 @@ function get_question_data() {
         $start_time_col = $wpdb->get_col("SELECT start_time FROM rbb_quiz_questions");
         $end_time_col = $wpdb->get_col("SELECT end_time FROM rbb_quiz_questions");
         $cost_col = $wpdb->get_col("SELECT cost FROM rbb_quiz_questions");
-        wp_enqueue_script('my-js', get_template_directory_uri() . 'script.js'); 
+        wp_enqueue_script('my-js', get_template_directory_uri() . '/includes/scripts/script.js'); 
         wp_localize_script('my-js', 'passedObject', array(
                 'start_time_col' => $start_time_col,
                 'end_time_col' => $end_time_col,
@@ -136,7 +141,6 @@ function get_question_data() {
     } 
 }
 add_action('wp_footer', 'get_question_data');
-//add_action('admin_footer', 'get_question_data');
 
 
 /**

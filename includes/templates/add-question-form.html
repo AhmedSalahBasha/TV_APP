@@ -1,0 +1,36 @@
+<div class="wrap container">
+    <div id="primary" class="content-area">
+        <main id="main" class="site-main" role="main">
+            <form method="post">
+                <div class="form-group">
+                    <label for="number">Question Number</label>
+                    <input type="number" class="form-control" name="number" id="number" placeholder="Question Number">
+                </div>
+                <div class="form-group">
+                    <label for="correct">Correct Answer</label>
+                    <div>
+                        <input type="radio" id="ans1" name="correct_ans" value="A">A<br>
+                        <input type="radio" id="ans2" name="correct_ans" value="B">B<br>
+                        <input type="radio" id="ans3" name="correct_ans" value="C">C<br>
+                        <input type="radio" id="ans4" name="correct_ans" value="D">D
+                    </div>
+                </div>
+                <br/>
+                <div class="form-group">
+                    <label for="start-time">Start Time</label>
+                    <input type="number" class="form-control" name="start_time" id="start-time" placeholder="Start Time in minutes">
+                </div>
+                <div class="form-group">
+                    <label for="end-time">End Time</label>
+                    <input type="number" class="form-control" name="end_time" id="end-time" placeholder="End Time in minutes">
+                </div>
+                <div class="form-group">
+                    <label for="cost">Score</label>
+                    <input type="number" class="form-control" name="cost" id="cost" placeholder="Score">
+                </div>
+                <input type="submit" name="btnSubmit" value="Submit Question" class="btn btn-primary">
+                <button type="submit" class="btn btn-success" hidden>Finish</button>
+            </form>
+        </main><!-- #main -->
+    </div><!-- #primary -->
+</div><!-- .wrap -->
