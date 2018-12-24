@@ -75,18 +75,15 @@ function rbbQuiz(){
         require $html_form;
 }
 
-
 /**
- * loading the questions form and handel the submission 
+ * handling the ajax post request from add_question_form
  */
-function questionsPage() {
-    $html_form = plugin_dir_path( __FILE__ ) . "/includes/templates/add-question-form.html";
-    if ( file_exists( $html_form ) )
-        require $html_form;
-
-    if (isset($_POST['btnSubmit'])) {
+add_action( 'wp_ajax_submit_question_form', 'submit_question_form' );
+function submit_question_form() {
+    if (isset($_POST['number'])) {
         global $wpdb;
         $number = $_POST['number'];
+        $number_of_answers = $_POST['number_of_answers'];
         $correct_ans = $_POST['correct_ans'];
         $start_time = $_POST['start_time'];
         $end_time = $_POST['end_time'];
@@ -96,6 +93,7 @@ function questionsPage() {
             $rowResult = $wpdb->insert($tbl_name, 
                 array(
                     'number' => $number,
+                    'number_of_answers' => $number_of_answers,
                     'correct_ans' => $correct_ans,
                     'start_time' => $start_time,
                     'end_time' => $end_time,
@@ -104,16 +102,101 @@ function questionsPage() {
                 $format = NULL
             );
             if ($rowResult == 1) {
-                echo '<h2>Form has been submitted successfully!</h2>';
+                wp_send_json_success(array(
+                    'message' => '<p>Form has been submitted successfully!</p>', 
+                    'status' => 1
+                ));
+                //echo "{'message':'<p>Form has been submitted successfully!</p>', 'status':1}";
             } else {
-                wp_die("<h2>Error Form Submission!</h2>");
+                wp_send_json_error(array(
+                    'message' => '<p>Error Form Submission!</p>',
+                    'status' => 0
+                ));
+                //echo "{'message':'<p>Error Form Submission!</p>', 'status':0}";
             }
+            die();
+            wp_die();
         }
         catch(Exception $e) {
-            echo '<h2>Connection Error! \\n Error Message: ',  $e->getMessage(), '</h2>', "\n";
+            wp_send_json_error(array(
+                'message' => '<p>Connection Error! >> '+$e+'</p>',
+                'status' => 0
+            ));
+            // echo '<h2>Connection Error! \\n Error Message: ',  $e->getMessage(), '</h2>', "\n";
         }
-        die;
     }
+}
+
+
+/**
+ * handling the ajax post request from question_style_form
+ */
+add_action( 'wp_ajax_submit_question_style_form', 'submit_question_style_form' );
+add_action( 'wp_ajax_nopriv_submit_question_style_form', 'submit_question_style_form' );
+function submit_question_style_form() {
+    if (isset($_POST['buttonNumber'])) {
+        global $wpdb;
+        $buttonNumber = $_POST['buttonNumber'];
+        $backgroundColor = $_POST['backgroundColor'];
+        $is_border = $_POST['is_border'];
+        $borderRadius = $_POST['borderRadius'];
+        $borderWidth = $_POST['borderWidth'];
+        $fontColor = $_POST['fontColor'];
+        $padding = $_POST['padding'];
+        $positionTop = $_POST['positionTop'];
+        $positionLeft = $_POST['positionLeft'];
+        $fontSize = $_POST['fontSize'];
+        $tbl_name = $wpdb->prefix . 'question_style';
+        try {
+            $rowResult = $wpdb->insert($tbl_name, 
+                array(
+                    'button_number' => $buttonNumber,
+                    'background_color' => $background_color,
+                    'border' => $is_border,
+                    'border_radius' => $borderRadius,
+                    'border_width' => $borderWidth,
+                    'font_color' => $fontColor,
+                    'padding' => $padding,
+                    'position_top' => $positionTop,
+                    'position_left' => $positionLeft,
+                    'font_size' => $fontSize,
+                ),
+                $format = NULL
+            );
+            if ($rowResult == 1) {
+                wp_send_json_success(array(
+                    'message' => '<p>Form has been submitted successfully!</p>', 
+                    'status' => 1
+                ));
+                //echo "{'message':'<p>Form has been submitted successfully!</p>', 'status':1}";
+            } else {
+                wp_send_json_error(array(
+                    'message' => '<p>Error Form Submission!</p>',
+                    'status' => 0
+                ));
+                //echo "{'message':'<p>Error Form Submission!</p>', 'status':0}";
+            }
+            die();
+            wp_die();
+        }
+        catch(Exception $e) {
+            wp_send_json_error(array(
+                'message' => '<p>Connection Error! >> '+$e+'</p>',
+                'status' => 0
+            ));
+            // echo '<h2>Connection Error! \\n Error Message: ',  $e->getMessage(), '</h2>', "\n";
+        }
+    }
+}
+
+
+/**
+ * loading the questions page form
+ */
+function questionsPage() {
+    $html_form = plugin_dir_path( __FILE__ ) . "/includes/templates/add-question-form.html";
+    if ( file_exists( $html_form ) )
+        require $html_form;
 }
 
 
@@ -201,6 +284,7 @@ function create_rbb_quiz_table() {
 		$sql = "CREATE TABLE $tbl_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             number tinyint NOT NULL,
+            number_of_answers tinyint NOT NULL,
             correct_ans tinytext NOT NULL,
             start_time tinytext NOT NULL,
             end_time tinytext NOT NULL,
@@ -215,6 +299,37 @@ register_activation_hook(__FILE__,'create_rbb_quiz_table');
 
 
 /**
+ * create question_style table in databasee
+ */				
+function create_question_style_table() {
+    if ( ! current_user_can( 'activate_plugins' ) ) return;
+   	global $wpdb;
+    $tbl_name = $wpdb->prefix . 'question_style';
+    $charset_collate = $wpdb->get_charset_collate();
+	if($wpdb->get_var("show tables like '$tbl_name'") != $tbl_name) 
+	{
+		$sql = "CREATE TABLE $tbl_name (
+            id mediumint(9) NOT NULL AUTO_INCREMENT,
+            button_number tinytext NOT NULL,
+            background_color tinytext NOT NULL,
+            border tinytext NOT NULL,
+            border_radius tinytext NOT NULL,
+            border_width tinytext NOT NULL,
+            font_color tinytext NOT NULL,
+            padding tinytext NOT NULL,
+            position_top tinytext NOT NULL,
+            position_left tinytext NOT NULL,
+            font_size tinytext NOT NULL,
+            PRIMARY KEY (id)
+		) $charset_collate;";
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta($sql);
+	}
+}
+register_activation_hook(__FILE__,'create_question_style_table');
+
+
+/**
  * remove rbb_quiz_questions table when deactivate plugin
  */
 function remove_rbb_quiz_table() {
@@ -224,3 +339,15 @@ function remove_rbb_quiz_table() {
     $wpdb->query($sql);
 } 
 register_deactivation_hook(__FILE__, 'remove_rbb_quiz_table');
+
+
+/**
+ * remove question_style table when deactivate plugin
+ */
+function remove_question_style_table() {
+    global $wpdb;
+    $tbl_name = $wpdb->prefix . 'question_style';
+    $sql = "DROP TABLE IF EXISTS $tbl_name";
+    $wpdb->query($sql);
+} 
+register_deactivation_hook(__FILE__, 'remove_question_style_table');

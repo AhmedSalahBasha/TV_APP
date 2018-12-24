@@ -1,12 +1,20 @@
 <div class="wrap container">
     <div id="primary" class="content-area">
         <main id="main" class="site-main" role="main">
-            <form method="post">
-                <div class="form-group">
+            <form method="post" id="add_question_form">
+                <div class="form-group col-sm-10">
                     <label for="number">Question Number</label>
                     <input type="number" class="form-control" name="number" id="number" placeholder="Question Number">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-sm-10">
+                    <label for="number_of_answers">Number of Answers:</label>
+                    <select name="number_of_answers" class="form-control" id="number_of_answers">
+                        <option value="2">Two Answers</option>
+                        <option value="3" selected>Three Answers</option>
+                        <option value="4">Four Answers</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-10">
                     <label for="correct">Correct Answer</label>
                     <div>
                         <input type="radio" id="ans1" name="correct_ans" value="A">A<br>
@@ -16,21 +24,26 @@
                     </div>
                 </div>
                 <br/>
-                <div class="form-group">
+                <div class="form-group col-sm-10">
                     <label for="start-time">Start Time</label>
-                    <input type="number" class="form-control" name="start_time" id="start-time" placeholder="Start Time in minutes">
+                    <input type="number" class="form-control" name="start_time" id="start_time" placeholder="Start Time in minutes">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-sm-10">
                     <label for="end-time">End Time</label>
-                    <input type="number" class="form-control" name="end_time" id="end-time" placeholder="End Time in minutes">
+                    <input type="number" class="form-control" name="end_time" id="end_time" placeholder="End Time in minutes">
                 </div>
-                <div class="form-group">
+                <div class="form-group col-sm-10">
                     <label for="cost">Score</label>
                     <input type="number" class="form-control" name="cost" id="cost" placeholder="Score">
                 </div>
-                <input type="submit" name="btnSubmit" value="Submit Question" class="btn btn-primary">
-                <button type="submit" class="btn btn-success" hidden>Finish</button>
+                <input type="hidden" name="action" value="submit_question_form">
+                <div class="form-group col-sm-10">
+                    <input type="submit" name="btnSubmit" value="Submit Question" class="btn btn-primary">
+                </div>
+                <div class="msgDiv"></div>
             </form>
         </main><!-- #main -->
     </div><!-- #primary -->
 </div><!-- .wrap -->
+
+<script src="../../../web/app/plugins/rbb-quiz/includes/scripts/add-question.js"></script>

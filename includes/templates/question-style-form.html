@@ -1,11 +1,11 @@
-<form class="form-horizontal" role="form">
+<form class="form-horizontal" method="post" id="question_style_form">
     <div class="form-group col-sm-10">
         <label for="backgroundColor">Background Color</label>
         <input id="backgroundColor" value="ffcc00" class="jscolor {width:243, height:150, position:'right',
                     borderColor:'#FFF', insetColor:'#FFF', backgroundColor:'#666'}">
     </div>
     <div class="form-group col-sm-10">
-        <label for="backgroundColor">Border</label>
+        <label for="borderYes">Border</label>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary active">
                 <input type="radio" name="is_border" id="borderYes" autocomplete="off" checked> YES
@@ -33,12 +33,22 @@
         <input type="text" class="form-control" id="padding" placeholder="Padding Top and Left  ex.(20px 15px)">
     </div>
     <div class="form-group col-sm-10">
+        <label for="positionTop">Position Top</label>
+        <input type="text" value="450px" class="form-control" id="positionTop" placeholder="Position Top  ex.(350px)">
+        <label for="positionLeft">Position Left</label>
+        <input type="text" value="1050px" class="form-control" id="positionLeft" placeholder="Position Left  ex.(1070px)">
+    </div>
+    <div class="form-group col-sm-10">
         <label for="fontSize">Font Size</label>
         <input type="text" class="form-control" id="fontSize" placeholder="Font Size  ex.(16px)">
     </div>
     <div class="clearfix"></div>
-    <div class="col-sm-10">
-        <button type="submit" class="btn btn-primary">Submit</button>
+    <input type="hidden" name="action" value="submit_question_style_form">
+    <div class="form-group col-sm-10">
+        <input onclick="submitQuestionStyleForm()" type="submit" name="btnSubmit" value="Submit Button Style" class="btn btn-primary">
     </div>
+    <div class="msgDiv"></div>
 </form>
 <div class="clearfix"></div>
+
+<script src="../../../web/app/plugins/rbb-quiz/includes/scripts/design-panel.js"></script>
