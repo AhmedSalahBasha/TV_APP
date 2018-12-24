@@ -14,7 +14,7 @@ Template Name: Admin Panel
  * add new tab to the main menu once activate plugin
  */
 add_action("admin_menu", "addMenu");
-function addMenu(){
+function addMenu() {
     add_menu_page(
         "RBB Quiz",         // page title
         "RBB Quiz",         // menu title
@@ -42,32 +42,37 @@ function addMenu(){
     );
 }
 
-/**
- * function to add Bootstrap core style link to the header
- */
-function add_bootstrap_style() {
-    echo '<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">';
-}
-add_action('wp_head', 'add_bootstrap_style');
-add_action('admin_head', 'add_bootstrap_style');
-
 
 /**
- * function to add Bootstrap core scripts to the footer
+ * load external libraries 
  */
-function add_bootstrap_script() {
-    echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>';
-    echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha384-pjaaA8dDz/5BgdFUPX6M/9SUZv4d12SUPF0axWc+VRZkx5xU3daN+lYb49+Ax+Tl" crossorigin="anonymous"></script>';
+function prefix_enqueue() {
+    // Bootstrap JS
+    wp_register_script('prefix_bootstrap', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
+    wp_enqueue_script('prefix_bootstrap');
+
+    // Bootstrap CSS
+    wp_register_style('prefix_bootstrap', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
+    wp_enqueue_style('prefix_bootstrap');
+
+    // Jquery 
+    wp_register_script( 'jQuery', 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js');
+    wp_enqueue_script('jQuery');
+    
+    // jsColor
+    wp_register_script( 'jsColor', 'https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js');
+    wp_enqueue_script('jsColor');
 }
-add_action('wp_footer', 'add_bootstrap_script');
-add_action('admin_footer', 'add_bootstrap_script');
+add_action("admin_enqueue_scripts", "prefix_enqueue");
 
 
 /**
  * the main function which loading the main plugin page
  */
 function rbbQuiz(){
-    echo '<h1>Welcome in RBB Quiz Plugin</h1>';
+    $html_form = plugin_dir_path( __FILE__ ) . "/includes/templates/main.html";
+    if ( file_exists( $html_form ) )
+        require $html_form;
 }
 
 
@@ -116,7 +121,9 @@ function questionsPage() {
  * loading the design page
  */
 function designPage() {
-    echo '<h1>Design Page</h1>';
+    $html_form = plugin_dir_path( __FILE__ ) . "/includes/templates/design-panel.html";
+    if ( file_exists( $html_form ) )
+        require $html_form;
 }
 
 
@@ -173,8 +180,7 @@ register_activation_hook(__FILE__, 'install_rbb_pg');
  * Add RBB Custom Template to our newly created page
  */
 add_filter( 'page_template', 'wp_page_template' );
-function wp_page_template( $page_template )
-{
+function wp_page_template( $page_template ){
     if ( is_page($page = 'RBB Quiz') ) {
         $page_template = plugin_dir_path( __FILE__ ) . 'rbb-page.php';
     }
