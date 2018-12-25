@@ -132,34 +132,32 @@ function submit_question_form() {
 add_action( 'wp_ajax_submit_question_style_form', 'submit_question_style_form' );
 add_action( 'wp_ajax_nopriv_submit_question_style_form', 'submit_question_style_form' );
 function submit_question_style_form() {
-    $counterID = 0;
     if (isset($_POST['buttonNumber'])) {
         global $wpdb;
-        $buttonNumber = $_POST['buttonNumber'];
-        $backgroundColor = $_POST['backgroundColor'];
-        $is_border = $_POST['is_border'];
-        $borderRadius = $_POST['borderRadius'];
-        $borderWidth = $_POST['borderWidth'];
-        $fontColor = $_POST['fontColor'];
+        $button_number = $_POST['buttonNumber'];
+        $background_color = $_POST['backgroundColor'];
+        $border = $_POST['is_border'];
+        $border_radius = $_POST['borderRadius'];
+        $border_width = $_POST['borderWidth'];
+        $font_color = $_POST['fontColor'];
         $padding = $_POST['padding'];
-        $positionTop = $_POST['positionTop'];
-        $positionLeft = $_POST['positionLeft'];
-        $fontSize = $_POST['fontSize'];
+        $position_top = $_POST['positionTop'];
+        $position_left = $_POST['positionLeft'];
+        $font_size = $_POST['fontSize'];
         $tbl_name = $wpdb->prefix . 'question_style';
         try {
             $rowResult = $wpdb->insert($tbl_name, 
                 array(
-                    'id' => $counterID,
-                    'button_number' => $buttonNumber,
+                    'button_number' => $button_number,
                     'background_color' => $background_color,
-                    'border' => $is_border,
-                    'border_radius' => $borderRadius,
-                    'border_width' => $borderWidth,
-                    'font_color' => $fontColor,
+                    'border' => $border,
+                    'border_radius' => $border_radius,
+                    'border_width' => $border_width,
+                    'font_color' => $font_color,
                     'padding' => $padding,
-                    'position_top' => $positionTop,
-                    'position_left' => $positionLeft,
-                    'font_size' => $fontSize,
+                    'position_top' => $position_top,
+                    'position_left' => $position_left,
+                    'font_size' => $font_size,
                 ),
                 $format = NULL
             );
@@ -168,7 +166,6 @@ function submit_question_style_form() {
                     'message' => '<h3>Form has been submitted successfully!</h3>', 
                     'status' => 1
                 ));
-                $counterID++;
             } else {
                 wp_send_json_error(array(
                     'message' => '<h3>Error Form Submission!</h3>',
@@ -209,18 +206,25 @@ function designPage() {
 
 
 /**
- * function to select the question data from database and send this data to another JS file
+ * function to select the question data from database and send this data to viewer JS file
  */
 function get_question_data() {
-    if( is_page(179) || is_page('RBB Quiz')) { //13   
+    if(is_page('RBB Quiz')) {
         echo "<p id='current'></p>";
         global $wpdb;
         // reading data from rbb_quiz_questions table in database
-        $start_time_col = $wpdb->get_col("SELECT start_time FROM rbb_quiz_questions");
-        $end_time_col = $wpdb->get_col("SELECT end_time FROM rbb_quiz_questions");
-        $cost_col = $wpdb->get_col("SELECT cost FROM rbb_quiz_questions");
-        wp_enqueue_script('my-js', get_template_directory_uri() . '/includes/scripts/script.js'); 
-        wp_localize_script('my-js', 'passedObject', array(
+        $number_col = $wpdb->get_col("SELECT number FROM wp_rbb_quiz_questions");
+        $number_of_answers_col = $wpdb->get_col("SELECT number_of_answers FROM wp_rbb_quiz_questions");
+        $correct_ans_col = $wpdb->get_col("SELECT correct_ans FROM wp_rbb_quiz_questions");
+        $start_time_col = $wpdb->get_col("SELECT start_time FROM wp_rbb_quiz_questions");
+        $end_time_col = $wpdb->get_col("SELECT end_time FROM wp_rbb_quiz_questions");
+        $cost_col = $wpdb->get_col("SELECT cost FROM wp_rbb_quiz_questions");
+        wp_register_script('viewer_script', plugins_url("/includes/scripts/viewer.js", __FILE__));
+        wp_enqueue_script('viewer_script');
+        wp_localize_script('viewer_script', 'questionsTable', array(
+                'number_col' => $number_col,
+                'number_of_answers_col' => $number_of_answers_col,
+                'correct_ans_col' => $correct_ans_col,
                 'start_time_col' => $start_time_col,
                 'end_time_col' => $end_time_col,
                 'cost_col' => $cost_col
@@ -232,12 +236,50 @@ add_action('wp_footer', 'get_question_data');
 
 
 /**
+ * function to select the question style data from database and send this data to viewer JS file
+ */
+function get_question_style() {
+    if(is_page('RBB Quiz')) {   
+        echo "<p id='current'></p>";
+        global $wpdb;
+        // reading data from rbb_quiz_questions table in database
+        $button_number_col = $wpdb->get_col("SELECT button_number FROM wp_question_style");
+        $background_color_col = $wpdb->get_col("SELECT background_color FROM wp_question_style");
+        $border_col = $wpdb->get_col("SELECT border FROM wp_question_style");
+        $border_radius_col = $wpdb->get_col("SELECT border_radius FROM wp_question_style");
+        $border_width_col = $wpdb->get_col("SELECT border_width FROM wp_question_style");
+        $font_color_col = $wpdb->get_col("SELECT font_color FROM wp_question_style");
+        $padding_col = $wpdb->get_col("SELECT padding FROM wp_question_style");
+        $position_top_col = $wpdb->get_col("SELECT position_top FROM wp_question_style");
+        $position_left_col = $wpdb->get_col("SELECT position_left FROM wp_question_style");
+        $font_size_col = $wpdb->get_col("SELECT font_size FROM wp_question_style");
+        wp_register_script('viewer_script', plugins_url("/includes/scripts/viewer.js", __FILE__));
+        wp_enqueue_script('viewer_script');
+        wp_localize_script('viewer_script', 'questionStyleTable', array(
+                'button_number_col' => $button_number_col,
+                'background_color_col' => $background_color_col,
+                'border_col' => $border_col,
+                'border_radius_col' => $border_radius_col,
+                'border_width_col' => $border_width_col,
+                'font_color_col' => $font_color_col,
+                'padding_col' => $padding_col,
+                'position_top_col' => $position_top_col,
+                'position_left_col' => $position_left_col,
+                'font_size_col' => $font_size_col
+            )
+        );
+    }
+}
+add_action('wp_footer', 'get_question_style');
+
+
+/**
  * Add RBB Quiz page on pulgin activation
  */
 function install_rbb_pg(){
     if ( ! current_user_can( 'activate_plugins' ) ) return;
     $new_page_title = 'RBB Quiz';
-    $new_page_content = 'This is your page content that automatically gets inserted into the RBB Quiz page!';
+    $new_page_content = 'Welcome to the RBB Quiz main page!';
     $new_page_template = ''; //ex. template-custom.php. Leave blank if you don't want a custom page template.
     $page_check = get_page_by_title($new_page_title);
     $new_page = array(
@@ -260,13 +302,13 @@ register_activation_hook(__FILE__, 'install_rbb_pg');
 /**
  * Add RBB Custom Template to our newly created page
  */
-add_filter( 'page_template', 'wp_page_template' );
-function wp_page_template( $page_template ){
-    if ( is_page($page = 'RBB Quiz') ) {
-        $page_template = plugin_dir_path( __FILE__ ) . 'rbb-page.php';
-    }
-    return $page_template;
-}
+// add_filter( 'page_template', 'wp_page_template' );
+// function wp_page_template( $page_template ){
+//     if ( is_page($page = 'RBB Quiz') ) {
+//         $page_template = plugin_dir_path( __FILE__ ) . 'rbb-page.php';
+//     }
+//     return $page_template;
+// }
 
 
 /**

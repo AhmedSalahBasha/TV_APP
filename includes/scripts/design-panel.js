@@ -1,5 +1,5 @@
 //global variables
-var buttonNumber = null;
+var button_number = null;
 
 
 /**
@@ -89,32 +89,32 @@ var loadStyleOptionsTemplate = function () {
 function submitQuestionStyleForm() {
     $('#question_style_form').submit(function(e){
         e.preventDefault();
-        buttonNumber = document.getElementById("buttonNum").value;
-        var backgroundColor = $("#backgroundColor").val();
-        var is_border = $('input[name=is_border]:checked').val();
-        var borderRadius = $("#borderRadius").val();
-        var borderWidth = $("#borderWidth").val();
-        var fontColor = $("#fontColor").val();
+        button_number = document.getElementById("buttonNum").value;
+        var background_color = $("#backgroundColor").val();
+        var border = $('input[name=is_border]:checked').val();
+        var border_radius = $("#borderRadius").val();
+        var border_width = $("#borderWidth").val();
+        var font_color = $("#fontColor").val();
         var padding = $("#padding").val();
-        var positionTop = $("#positionTop").val();
-        var positionLeft = $("#positionLeft").val();
-        var fontSize = $("#fontSize").val();
+        var position_top = $("#positionTop").val();
+        var position_left = $("#positionLeft").val();
+        var font_size = $("#fontSize").val();
 
         $.ajax({ 
             dataType: 'json',
             type: 'post',
             data: {
                 action: 'submit_question_style_form',
-                buttonNumber: buttonNumber,
-                backgroundColor: backgroundColor,
-                is_border: is_border,
-                borderRadius: borderRadius,
-                borderWidth: borderWidth,
-                fontColor: fontColor,
+                button_number: button_number,
+                background_color: background_color,
+                border: border,
+                border_radius: border_radius,
+                border_width: border_width,
+                font_color: font_color,
                 padding: padding,
-                positionTop: positionTop,
-                positionLeft: positionLeft,
-                fontSize: fontSize,
+                position_top: position_top,
+                position_left: position_left,
+                font_size: font_size,
             },
             url: ajaxurl,
             success: function(data) {

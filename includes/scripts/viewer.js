@@ -2,8 +2,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     // Your code to run since DOM is loaded and ready
     setTimeout(function(){
 
-        var videoURL = "/mpat/web/app/uploads/2018/12/rbb_quiz_video.mp4";
-        createVideoTemplate(videoURL);
+        var videoUrl = "/mpat/web/app/uploads/2018/12/rbb_quiz_video.mp4";
+        //createVideoTemplate(videoURL);
+        setVideoURL(videoUrl);
         createTimerVideoTemplate();
         createTimerVideo();
         createToggleTrackingButtonTemplate("530px", " A");
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         createToggleTrackingButtonTemplate("630px", " C");
         createScoreTemplate();
     
-    }, 2600);
+    }, 1800);
 
 });
 
@@ -205,29 +206,6 @@ function createTimer() {
     }, 1000);
 }
 
-function createVideoTemplateOld(version) {
-    var background = document.getElementById("vidcontainer");
-    var videoElement = null;
-    if (version == "html5") {
-        videoElement = document.createElement("video");
-        videoElement.src = "/mpat/web/app/uploads/2018/12/SampleVideo_1280x720_5mb.mp4";
-        console.log("It's working on HTML5!!");
-    } else {
-        videoElement = document.createElement("object");
-        videoElement.type = "video/mp4";
-        videoElement.data = "/mpat/web/app/uploads/2018/12/SampleVideo_1280x720_5mb.mp4";
-        videoElement.ontimeupdate = function() {
-            document.getElementById("current").innerText = videoElement.currentTime;
-        };
-        console.log("It's working on HTML4!!");
-    }
-    videoElement.id = "video";
-    videoElement.autoplay = true;
-    videoElement.style.minHeight = "100%";
-    videoElement.style.minWidth = "100%";
-    background.appendChild(videoElement);
-}
-
 function createVideoTemplate(url) {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
     var mainDiv = document.createElement("div");
@@ -243,7 +221,8 @@ function createVideoTemplate(url) {
 
     var child2Div = document.createElement("div");
     child2Div.classList.add("page-element-content");
-    child2Div.classList.add("video-content fullscreen");
+    child2Div.classList.add("video-content");
+    child2Div.classList.add("fullscreen");
 
     var child3Div = document.createElement("div");
     child3Div.style.position = "absolute";
@@ -268,7 +247,7 @@ function createVideoTemplate(url) {
 }
 
 function compareStartTime() {
-    var startTimeCol = passedObject.start_time_col;
+    var startTimeCol = questionsTable.start_time_col;
     for(var i = 0; i < startTimeCol.length; i++) {
         if (startTimeCol[i] == seconds) {
             document.getElementsByClassName("toggletracking-component")[0].style.display = "block";
@@ -279,7 +258,7 @@ function compareStartTime() {
 }
 
 function compareEndTime() {
-    var endTimeCol = passedObject.end_time_col;
+    var endTimeCol = questionsTable.end_time_col;
     for(var i = 0; i < endTimeCol.length; i++) {
         if (endTimeCol[i] == seconds) {
             document.getElementsByClassName("toggletracking-component")[0].style.display = "none";
@@ -288,4 +267,6 @@ function compareEndTime() {
         }
     }
 }
+
+
 
