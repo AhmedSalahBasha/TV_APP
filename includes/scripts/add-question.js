@@ -26,14 +26,14 @@ jQuery(document).ready(function($) {
             },
             url: ajaxurl,
             success: function(data) {
-                $(".msgDiv").html(data.message);
-                if (data.status == 1) {
-                    $("#add_question_form").trigger('reset');
+                $(".msgDiv").html(data.data.message);
+                if (data.data.status == 1) {
+                    document.getElementById("add_question_form").reset();
                 }
             },
             error: function(err) {
                 alert(err);
-                $(".msgDiv").html(data.message);
+                $(".msgDiv").html(data.data.message);
             }
         });
     });

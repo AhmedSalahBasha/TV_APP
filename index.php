@@ -103,16 +103,14 @@ function submit_question_form() {
             );
             if ($rowResult == 1) {
                 wp_send_json_success(array(
-                    'message' => '<p>Form has been submitted successfully!</p>', 
+                    'message' => '<h3>Form has been submitted successfully!</h3>', 
                     'status' => 1
                 ));
-                //echo "{'message':'<p>Form has been submitted successfully!</p>', 'status':1}";
             } else {
                 wp_send_json_error(array(
-                    'message' => '<p>Error Form Submission!</p>',
+                    'message' => '<h3>Error Form Submission!</h3>',
                     'status' => 0
                 ));
-                //echo "{'message':'<p>Error Form Submission!</p>', 'status':0}";
             }
             die();
             wp_die();
@@ -134,6 +132,7 @@ function submit_question_form() {
 add_action( 'wp_ajax_submit_question_style_form', 'submit_question_style_form' );
 add_action( 'wp_ajax_nopriv_submit_question_style_form', 'submit_question_style_form' );
 function submit_question_style_form() {
+    $counterID = 0;
     if (isset($_POST['buttonNumber'])) {
         global $wpdb;
         $buttonNumber = $_POST['buttonNumber'];
@@ -150,6 +149,7 @@ function submit_question_style_form() {
         try {
             $rowResult = $wpdb->insert($tbl_name, 
                 array(
+                    'id' => $counterID,
                     'button_number' => $buttonNumber,
                     'background_color' => $background_color,
                     'border' => $is_border,
@@ -165,16 +165,15 @@ function submit_question_style_form() {
             );
             if ($rowResult == 1) {
                 wp_send_json_success(array(
-                    'message' => '<p>Form has been submitted successfully!</p>', 
+                    'message' => '<h3>Form has been submitted successfully!</h3>', 
                     'status' => 1
                 ));
-                //echo "{'message':'<p>Form has been submitted successfully!</p>', 'status':1}";
+                $counterID++;
             } else {
                 wp_send_json_error(array(
-                    'message' => '<p>Error Form Submission!</p>',
+                    'message' => '<h3>Error Form Submission!</h3>',
                     'status' => 0
                 ));
-                //echo "{'message':'<p>Error Form Submission!</p>', 'status':0}";
             }
             die();
             wp_die();
@@ -184,7 +183,6 @@ function submit_question_style_form() {
                 'message' => '<p>Connection Error! >> '+$e+'</p>',
                 'status' => 0
             ));
-            // echo '<h2>Connection Error! \\n Error Message: ',  $e->getMessage(), '</h2>', "\n";
         }
     }
 }
@@ -283,8 +281,8 @@ function create_rbb_quiz_table() {
 	{
 		$sql = "CREATE TABLE $tbl_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
-            number tinyint NOT NULL,
-            number_of_answers tinyint NOT NULL,
+            number tinytext NOT NULL,
+            number_of_answers tinytext NOT NULL,
             correct_ans tinytext NOT NULL,
             start_time tinytext NOT NULL,
             end_time tinytext NOT NULL,

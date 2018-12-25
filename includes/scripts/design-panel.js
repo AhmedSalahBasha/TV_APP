@@ -52,7 +52,7 @@ function createSelectOption(type) {
     } else {
         inputdata = [1,2,3,4];
     }
- 
+
     inputdata.forEach(function( item ) {
         option = document.createElement('option');
         option.value = option.textContent = item;
@@ -75,14 +75,12 @@ function removeNumList() {
  * load button style options template when select the button number
  */
 var loadStyleOptionsTemplate = function () {
-    buttonNumber = document.getElementById("buttonNum").value;
     var container = document.getElementById("questionStyleOption");
     req = new XMLHttpRequest();
     req.open("GET", "../../../web/app/plugins/rbb-quiz/includes/templates/question-style-form.html", false);
     req.send(null);
     container.innerHTML = req.responseText;
     jscolor.installByClassName("jscolor");
-    //submitQuestionStyleForm();
 }
 
 /**
@@ -91,7 +89,7 @@ var loadStyleOptionsTemplate = function () {
 function submitQuestionStyleForm() {
     $('#question_style_form').submit(function(e){
         e.preventDefault();
-        var buttonNumber = buttonNumber;
+        buttonNumber = document.getElementById("buttonNum").value;
         var backgroundColor = $("#backgroundColor").val();
         var is_border = $('input[name=is_border]:checked').val();
         var borderRadius = $("#borderRadius").val();
@@ -120,14 +118,14 @@ function submitQuestionStyleForm() {
             },
             url: ajaxurl,
             success: function(data) {
-                $(".msgDiv").html(data.message);
-                if (data.status == 1) {
-                    $("#question_style_form").trigger('reset');
+                $(".msgDiv").html(data.data.message);
+                if (data.data.status == 1) {
+                    document.getElementById("question_style_form").reset();
                 }
             },
             error: function(err) {
                 alert(err);
-                $(".msgDiv").html(data.message);
+                $(".msgDiv").html(data.data.message);
             }
         });
     });
