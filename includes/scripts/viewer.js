@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         createToggleTrackingButtonTemplate("580px", " B");
         createToggleTrackingButtonTemplate("630px", " C");
         createScoreTemplate();
-    
+        navigateButtons();
+        chooseAnswer();    
     }, 1800);
 
 });
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 // Global Variables 
 var seconds = 0, minutes = 0, hours = 0, t = 0;
+var btnIndex = 0, btnsList = null;
 
 function setVideoURL (videoUrl) {
     var vidObject = document.getElementsByClassName("video-wrapper")[0].firstChild;
@@ -66,7 +68,7 @@ function createToggleTrackingButtonTemplate(top, text) {
     var mainDiv = document.createElement("div");
     mainDiv.classList.add("page-element");
     mainDiv.classList.add("toggletracking-component");
-    mainDiv.style.left = "1160px" 
+    mainDiv.style.left = "1160px";
     mainDiv.style.top = top;
     mainDiv.style.width = "60px";
     mainDiv.style.height = "40px";
@@ -269,4 +271,73 @@ function compareEndTime() {
 }
 
 
+// obj   - the source element
+// event - the event data
+// i     - child index of the textbox
+function form_vert_nav(obj, event, i) {
+    var o = ((event.keyCode == 38 || event.keyCode == 40) ? obj.parentNode.parentNode : null);
+    if (event.keyCode == 38) { // up
+        o = o.previousSibling;
+    } else if (event.keyCode == 40) { // down
+        o = o.nextSibling;
+    } else {
+        return;
+    }
+    if (o == null) {
+        // keyCode wasn't 38 or 40 and magically slipped through the else,
+        // or the sibling simply doesn't exist (more likely).
+        return;
+    }
+    if ((o = o.getElementsByTagName(obj.tagName)[i]) == null) {
+        // 404 Element Not Found
+        return;
+    }
+    o.focus();
+}
+
+function navigateButtons(e) {
+    btnsList = document.getElementsByClassName("toggletracking-component");
+    var length = btnsList.length;
+    var btn = null;
+    document.addEventListener('keyup', function(e) {
+        if (e.keyCode == 38) { //up
+            if (btnIndex == 0) {
+                return;
+            }
+            btnIndex--;
+            for (var i = 0; i < length; i++) {
+                btnsList[i].style.borderColor = "red";
+                btnsList[i].blur();    
+            }
+            btn = btnsList[btnIndex-1];
+            btn.focus();
+            btn.style.borderColor = "yellow";
+
+        } else if (e.keyCode == 40) { //down
+            if (btnIndex > length) {
+                return;
+            }
+            btnIndex++;
+            for (var i = 0; i < length; i++) {
+                btnsList[i].style.borderColor = "red";
+                btnsList[i].blur();    
+            }
+            btn = btnsList[btnIndex-1];
+            btn.focus();
+            btn.style.borderColor = "yellow";
+        }
+    }); 
+}
+
+
+function chooseAnswer() {
+    document.addEventListener('keyup', function (e) {
+        if (e.keyCode == 13) {
+            for (var i = 0; i < btnsList.length; i++) {
+                btnsList[i].style.backgroundColor = "transparent";    
+            }
+            btnsList[btnIndex-1].style.backgroundColor = "green";
+        }
+    })
+}
 
