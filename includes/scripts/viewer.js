@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         navigateButtons();
         chooseAnswer();    
     }, 1800);
-
 });
 
 
@@ -26,6 +25,7 @@ function setVideoURL (videoUrl) {
     var vidObject = document.getElementsByClassName("video-wrapper")[0].firstChild;
     vidObject.data = videoUrl;
 }
+
 
 function createScoreTemplate() {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
@@ -108,6 +108,7 @@ function createToggleTrackingButtonTemplate(top, text) {
     mainContainer.appendChild(mainDiv);
 }
 
+
 function createTimerTemplate() {
     var timerElement = document.createElement("p");
     timerElement.id = "timer";
@@ -120,6 +121,7 @@ function createTimerTemplate() {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
     mainContainer.appendChild(timerDiv); 
 }
+
 
 function createTimerVideo() {
     function add() {
@@ -144,6 +146,7 @@ function createTimerVideo() {
     }
     timer();
 }
+
 
 function createTimerVideoTemplate() {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
@@ -185,6 +188,7 @@ function createTimerVideoTemplate() {
     mainContainer.appendChild(mainDiv);
 }
 
+
 function createTimer() {
     // Set the date we're counting down to
     var countDownDate = new Date("Dec 13, 2018 13:30:00").getTime();
@@ -207,6 +211,7 @@ function createTimer() {
         }
     }, 1000);
 }
+
 
 function createVideoTemplate(url) {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
@@ -248,6 +253,7 @@ function createVideoTemplate(url) {
     mainContainer.appendChild(mainDiv);
 }
 
+
 function compareStartTime() {
     var startTimeCol = questionsTable.start_time_col;
     for(var i = 0; i < startTimeCol.length; i++) {
@@ -259,6 +265,7 @@ function compareStartTime() {
     }
 }
 
+
 function compareEndTime() {
     var endTimeCol = questionsTable.end_time_col;
     for(var i = 0; i < endTimeCol.length; i++) {
@@ -266,66 +273,42 @@ function compareEndTime() {
             document.getElementsByClassName("toggletracking-component")[0].style.display = "none";
             document.getElementsByClassName("toggletracking-component")[1].style.display = "none";
             document.getElementsByClassName("toggletracking-component")[2].style.display = "none";
+            if (checkAnswer(i)) {
+                console.log("True Answer!");
+            } else {
+                console.log("Wrong Answer!");
+            }
+            resetButton();
         }
     }
 }
 
-
-// obj   - the source element
-// event - the event data
-// i     - child index of the textbox
-function form_vert_nav(obj, event, i) {
-    var o = ((event.keyCode == 38 || event.keyCode == 40) ? obj.parentNode.parentNode : null);
-    if (event.keyCode == 38) { // up
-        o = o.previousSibling;
-    } else if (event.keyCode == 40) { // down
-        o = o.nextSibling;
-    } else {
-        return;
-    }
-    if (o == null) {
-        // keyCode wasn't 38 or 40 and magically slipped through the else,
-        // or the sibling simply doesn't exist (more likely).
-        return;
-    }
-    if ((o = o.getElementsByTagName(obj.tagName)[i]) == null) {
-        // 404 Element Not Found
-        return;
-    }
-    o.focus();
-}
 
 function navigateButtons(e) {
     btnsList = document.getElementsByClassName("toggletracking-component");
-    var length = btnsList.length;
-    var btn = null;
     document.addEventListener('keyup', function(e) {
         if (e.keyCode == 38) { //up
-            if (btnIndex == 0) {
+            if (btnIndex == 1) {
                 return;
             }
             btnIndex--;
-            for (var i = 0; i < length; i++) {
-                btnsList[i].style.borderColor = "red";
-                btnsList[i].blur();    
-            }
-            btn = btnsList[btnIndex-1];
-            btn.focus();
-            btn.style.borderColor = "yellow";
-
         } else if (e.keyCode == 40) { //down
-            if (btnIndex > length) {
+            if (btnIndex >= btnsList.length) {
                 return;
             }
             btnIndex++;
-            for (var i = 0; i < length; i++) {
-                btnsList[i].style.borderColor = "red";
-                btnsList[i].blur();    
-            }
-            btn = btnsList[btnIndex-1];
-            btn.focus();
-            btn.style.borderColor = "yellow";
         }
+
+        for (var i = 0; i < btnsList.length; i++) {
+            btnsList[i].style.borderColor = "red";
+            btnsList[i].blur();
+            if (btnsList[i].classList.contains("btnActive")) {
+                btnsList[i].classList.remove("btnActive");    
+            }
+        }
+        btnsList[btnIndex-1].focus();
+        btnsList[btnIndex-1].style.borderColor = "yellow";
+        btnsList[btnIndex-1].classList.add("btnActive");
     }); 
 }
 
@@ -334,10 +317,49 @@ function chooseAnswer() {
     document.addEventListener('keyup', function (e) {
         if (e.keyCode == 13) {
             for (var i = 0; i < btnsList.length; i++) {
-                btnsList[i].style.backgroundColor = "transparent";    
+                btnsList[i].style.backgroundColor = "transparent";
+                if (btnsList[i].classList.contains("btnSelected")) {
+                    btnsList[i].classList.remove("btnSelected"); 
+                }
             }
             btnsList[btnIndex-1].style.backgroundColor = "green";
+            btnsList[btnIndex-1].classList.add("btnSelected");
         }
     })
 }
 
+
+function resetButton() {
+    for (var i = 0; i < btnsList.length; i++) {
+        if (btnsList[i].classList.contains("btnSelected")) {
+            btnsList[i].classList.remove("btnSelected"); 
+        }
+        if (btnsList[i].classList.contains("btnActive")) {
+            btnsList[i].classList.remove("btnActive");    
+        }
+        btnsList[i].style.backgroundColor = "transparent";
+        btnsList[i].style.borderColor = "red";
+    }
+}
+
+
+function checkAnswer(i) {
+    var is_correct = false;
+    var correctAnsCol = questionsTable.correct_ans_col;
+    var correctAns = correctAnsCol[i];
+    var selectedAnswer = null;
+    if (btnIndex-1 == 1) {
+        selectedAnswer = "A";
+    } else if (btnIndex-1 == 2) {
+        selectedAnswer = "B";
+    } else if (btnIndex-1 == 3) {
+        selectedAnswer = "C";
+    } else if (btnIndex-1 == 4) {
+        selectedAnswer = "D";
+    }
+
+    if (correctAns == selectedAnswer) {
+        is_correct = true;
+    }
+    return is_correct;
+}
