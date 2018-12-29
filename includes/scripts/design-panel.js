@@ -89,8 +89,10 @@ var loadStyleOptionsTemplate = function () {
 function submitQuestionStyleForm() {
     $('#question_style_form').submit(function(e){
         e.preventDefault();
-        button_number = document.getElementById("buttonNum").value;
+        var number_of_answers = $("#number_of_answers").val();
+        button_number = $("#buttonNum").val();
         var background_color = $("#backgroundColor").val();
+        var button_text = $("#buttonText").val();
         var border = $('input[name=is_border]:checked').val();
         var border_radius = $("#borderRadius").val();
         var border_width = $("#borderWidth").val();
@@ -105,8 +107,10 @@ function submitQuestionStyleForm() {
             type: 'post',
             data: {
                 action: 'submit_question_style_form',
+                number_of_answers: number_of_answers,
                 button_number: button_number,
                 background_color: background_color,
+                button_text: button_text,
                 border: border,
                 border_radius: border_radius,
                 border_width: border_width,

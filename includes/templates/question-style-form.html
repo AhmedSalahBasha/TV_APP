@@ -5,6 +5,10 @@
                     borderColor:'#FFF', insetColor:'#FFF', backgroundColor:'#666'}">
     </div>
     <div class="form-group col-sm-10">
+        <label for="buttonText">Text</label>
+        <input type="text" class="form-control" id="buttonText" placeholder="Button Text  ex.(A)" required>
+    </div>
+    <div class="form-group col-sm-10">
         <label for="borderYes">Border</label>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary active">
@@ -17,11 +21,11 @@
     </div>
     <div class="form-group col-sm-10">
         <label for="borderRadius">Border Radius</label>
-        <input type="text" class="form-control" id="borderRadius" placeholder="Border Radius  ex.(8px)">
+        <input type="text" class="form-control" id="borderRadius" placeholder="Border Radius  ex.(8px)" required>
     </div>
     <div class="form-group col-sm-10">
         <label for="borderWidth">Border Width</label>
-        <input type="text" class="form-control" id="borderWidth" placeholder="Border Width  ex.(3px)">
+        <input type="text" class="form-control" id="borderWidth" placeholder="Border Width  ex.(3px)" required>
     </div>
     <div class="form-group col-sm-10">
         <label for="fontColor">Font Color</label>
@@ -30,22 +34,22 @@
     </div>
     <div class="form-group col-sm-10">
         <label for="padding">Padding</label>
-        <input type="text" class="form-control" id="padding" placeholder="Padding Top and Left  ex.(20px 15px)">
+        <input type="text" class="form-control" id="padding" placeholder="Padding Top and Left  ex.(20px 15px)" required>
     </div>
     <div class="form-group col-sm-10">
         <label for="positionTop">Position Top</label>
-        <input type="text" value="450px" class="form-control" id="positionTop" placeholder="Position Top  ex.(350px)">
+        <input type="text" value="450px" class="form-control" id="positionTop" placeholder="Position Top  ex.(350px)" required>
         <label for="positionLeft">Position Left</label>
-        <input type="text" value="1050px" class="form-control" id="positionLeft" placeholder="Position Left  ex.(1070px)">
+        <input type="text" value="1050px" class="form-control" id="positionLeft" placeholder="Position Left  ex.(1070px)" required>
     </div>
     <div class="form-group col-sm-10">
         <label for="fontSize">Font Size</label>
-        <input type="text" class="form-control" id="fontSize" placeholder="Font Size  ex.(16px)">
+        <input type="text" class="form-control" id="fontSize" placeholder="Font Size  ex.(16px)" required>
     </div>
     <div class="clearfix"></div>
     <input type="hidden" name="action" value="submit_question_style_form">
     <div class="form-group col-sm-10">
-        <input onclick="submitQuestionStyleForm()" type="submit" name="btnSubmit" value="Submit Button Style" class="btn btn-primary">
+        <input type="submit" onclick="submitQuestionStyleForm()" name="btnSubmit" value="Submit Button Style" class="btn btn-primary">
     </div>
     <div class="msgDiv form-group col-sm-10"></div>
 </form>

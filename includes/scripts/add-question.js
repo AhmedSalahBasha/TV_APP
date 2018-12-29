@@ -2,7 +2,7 @@
 /**
  * Submit ajax post request from add_question_form
  */
-jQuery(document).ready(function($) {
+$(document).ready(function() {
     $('#add_question_form').submit(function(e){
         e.preventDefault();
         var number = $("#number").val();

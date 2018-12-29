@@ -7,13 +7,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         setVideoURL(videoUrl);
         createTimerVideoTemplate();
         createTimerVideo();
-        createToggleTrackingButtonTemplate("530px", " A");
-        createToggleTrackingButtonTemplate("580px", " B");
-        createToggleTrackingButtonTemplate("630px", " C");
         createScoreTemplate();
         navigateButtons();
-        chooseAnswer();    
-    }, 1800);
+        chooseAnswer();   
+    }, 1850);
 });
 
 
@@ -63,7 +60,7 @@ function createScoreTemplate() {
 }
 
 
-function createToggleTrackingButtonTemplate(top, text) {
+function createToggleTrackingButtonTemplate(id, top, text) {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
     var mainDiv = document.createElement("div");
     mainDiv.classList.add("page-element");
@@ -75,7 +72,8 @@ function createToggleTrackingButtonTemplate(top, text) {
     mainDiv.style.zIndex = "1000";
     mainDiv.style.border = "solid";
     mainDiv.style.borderColor = "red";
-    mainDiv.style.display = "none";
+    mainDiv.style.display = "block";
+    mainDiv.id = id;
 
     var child1Div = document.createElement("div");
     child1Div.style.left = "0px";
@@ -255,24 +253,25 @@ function createVideoTemplate(url) {
 
 
 function compareStartTime() {
-    var startTimeCol = questionsTable.start_time_col;
-    for(var i = 0; i < startTimeCol.length; i++) {
-        if (startTimeCol[i] == seconds) {
-            document.getElementsByClassName("toggletracking-component")[0].style.display = "block";
-            document.getElementsByClassName("toggletracking-component")[1].style.display = "block";
-            document.getElementsByClassName("toggletracking-component")[2].style.display = "block";
+    for(var i = 0; i < questionsTable.questionsRows.length; i++) {
+        if (questionsTable.questionsRows[i].start_time == seconds) {
+            var questionNumOfAns = questionsTable.questionsRows[i].number_of_answers;
+            questionStyleTable.questionStyleRows.forEach(function(v, i) {
+                if (v.number_of_answers == questionNumOfAns) {
+                    createToggleTrackingButtonTemplate("id"+v.id, v.position_top, " A");
+                }
+            })
         }
     }
 }
 
 
 function compareEndTime() {
-    var endTimeCol = questionsTable.end_time_col;
-    for(var i = 0; i < endTimeCol.length; i++) {
-        if (endTimeCol[i] == seconds) {
-            document.getElementsByClassName("toggletracking-component")[0].style.display = "none";
-            document.getElementsByClassName("toggletracking-component")[1].style.display = "none";
-            document.getElementsByClassName("toggletracking-component")[2].style.display = "none";
+    for(var i = 0; i < questionsTable.questionsRows.length; i++) {
+        if (questionsTable.questionsRows[i].end_time == seconds) {
+            for (var j = 0; j < document.getElementsByClassName("toggletracking-component").length; j++) {
+                document.getElementsByClassName("toggletracking-component")[j].remove();
+            }
             if (checkAnswer(i)) {
                 console.log("True Answer!");
             } else {
@@ -345,19 +344,20 @@ function resetButton() {
 
 function checkAnswer(i) {
     var is_correct = false;
-    var correctAnsCol = questionsTable.correct_ans_col;
-    var correctAns = correctAnsCol[i];
+    var correctAns = questionsTable.questionsRows[i].correct_ans;
     var selectedAnswer = null;
-    if (btnIndex-1 == 1) {
-        selectedAnswer = "A";
-    } else if (btnIndex-1 == 2) {
-        selectedAnswer = "B";
-    } else if (btnIndex-1 == 3) {
-        selectedAnswer = "C";
-    } else if (btnIndex-1 == 4) {
-        selectedAnswer = "D";
-    }
 
+    for (var j = 0; j < btnsList.length; j++) {
+        if (btnsList[j].id == "id1" && btnsList[j].classList.contains("btnSelected")) {
+            selectedAnswer = "A";
+        } else if (btnsList[j].id == "id2" && btnsList[j].classList.contains("btnSelected")) {
+            selectedAnswer = "B";
+        } else if (btnsList[j].id == "id3" && btnsList[j].classList.contains("btnSelected")) {
+            selectedAnswer = "C";
+        } else if (btnsList[j].id == "id4" && btnsList[j].classList.contains("btnSelected")) {
+            selectedAnswer = "D";
+        }
+    }
     if (correctAns == selectedAnswer) {
         is_correct = true;
     }

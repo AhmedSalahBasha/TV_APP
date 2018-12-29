@@ -79,6 +79,7 @@ function rbbQuiz(){
  * handling the ajax post request from add_question_form
  */
 add_action( 'wp_ajax_submit_question_form', 'submit_question_form' );
+add_action( 'wp_ajax_nopriv_submit_question_form', 'submit_question_form' );
 function submit_question_form() {
     if (isset($_POST['number'])) {
         global $wpdb;
@@ -132,24 +133,28 @@ function submit_question_form() {
 add_action( 'wp_ajax_submit_question_style_form', 'submit_question_style_form' );
 add_action( 'wp_ajax_nopriv_submit_question_style_form', 'submit_question_style_form' );
 function submit_question_style_form() {
-    if (isset($_POST['buttonNumber'])) {
+    if (isset($_POST['button_number'])) {
         global $wpdb;
-        $button_number = $_POST['buttonNumber'];
-        $background_color = $_POST['backgroundColor'];
-        $border = $_POST['is_border'];
-        $border_radius = $_POST['borderRadius'];
-        $border_width = $_POST['borderWidth'];
-        $font_color = $_POST['fontColor'];
+        $number_of_answers = $_POST['number_of_answers'];
+        $button_number = $_POST['button_number'];
+        $background_color = $_POST['background_color'];
+        $button_text = $_POST['button_text'];
+        $border = $_POST['border'];
+        $border_radius = $_POST['border_radius'];
+        $border_width = $_POST['border_width'];
+        $font_color = $_POST['font_color'];
         $padding = $_POST['padding'];
-        $position_top = $_POST['positionTop'];
-        $position_left = $_POST['positionLeft'];
-        $font_size = $_POST['fontSize'];
+        $position_top = $_POST['position_top'];
+        $position_left = $_POST['position_left'];
+        $font_size = $_POST['font_size'];
         $tbl_name = $wpdb->prefix . 'question_style';
         try {
             $rowResult = $wpdb->insert($tbl_name, 
                 array(
+                    'number_of_answers' => $number_of_answers,
                     'button_number' => $button_number,
                     'background_color' => $background_color,
+                    'button_text' => $button_text,
                     'border' => $border,
                     'border_radius' => $border_radius,
                     'border_width' => $border_width,
@@ -164,12 +169,12 @@ function submit_question_style_form() {
             if ($rowResult == 1) {
                 wp_send_json_success(array(
                     'message' => '<h3>Form has been submitted successfully!</h3>', 
-                    'status' => 1
+                    'status' => 1,
                 ));
             } else {
                 wp_send_json_error(array(
                     'message' => '<h3>Error Form Submission!</h3>',
-                    'status' => 0
+                    'status' => 0,
                 ));
             }
             die();
@@ -213,21 +218,11 @@ function get_question_data() {
         echo "<p id='current'></p>";
         global $wpdb;
         // reading data from rbb_quiz_questions table in database
-        $number_col = $wpdb->get_col("SELECT number FROM wp_rbb_quiz_questions");
-        $number_of_answers_col = $wpdb->get_col("SELECT number_of_answers FROM wp_rbb_quiz_questions");
-        $correct_ans_col = $wpdb->get_col("SELECT correct_ans FROM wp_rbb_quiz_questions");
-        $start_time_col = $wpdb->get_col("SELECT start_time FROM wp_rbb_quiz_questions");
-        $end_time_col = $wpdb->get_col("SELECT end_time FROM wp_rbb_quiz_questions");
-        $cost_col = $wpdb->get_col("SELECT cost FROM wp_rbb_quiz_questions");
+        $questionsRows = $wpdb->get_results("SELECT * FROM wp_rbb_quiz_questions", ARRAY_A);
         wp_register_script('viewer_script', plugins_url("/includes/scripts/viewer.js", __FILE__));
         wp_enqueue_script('viewer_script');
         wp_localize_script('viewer_script', 'questionsTable', array(
-                'number_col' => $number_col,
-                'number_of_answers_col' => $number_of_answers_col,
-                'correct_ans_col' => $correct_ans_col,
-                'start_time_col' => $start_time_col,
-                'end_time_col' => $end_time_col,
-                'cost_col' => $cost_col
+                'questionsRows' => $questionsRows
             )
         );
     } 
@@ -243,29 +238,11 @@ function get_question_style() {
         echo "<p id='current'></p>";
         global $wpdb;
         // reading data from rbb_quiz_questions table in database
-        $button_number_col = $wpdb->get_col("SELECT button_number FROM wp_question_style");
-        $background_color_col = $wpdb->get_col("SELECT background_color FROM wp_question_style");
-        $border_col = $wpdb->get_col("SELECT border FROM wp_question_style");
-        $border_radius_col = $wpdb->get_col("SELECT border_radius FROM wp_question_style");
-        $border_width_col = $wpdb->get_col("SELECT border_width FROM wp_question_style");
-        $font_color_col = $wpdb->get_col("SELECT font_color FROM wp_question_style");
-        $padding_col = $wpdb->get_col("SELECT padding FROM wp_question_style");
-        $position_top_col = $wpdb->get_col("SELECT position_top FROM wp_question_style");
-        $position_left_col = $wpdb->get_col("SELECT position_left FROM wp_question_style");
-        $font_size_col = $wpdb->get_col("SELECT font_size FROM wp_question_style");
+        $questionStyleRows = $wpdb->get_results("SELECT * FROM wp_question_style", ARRAY_A);
         wp_register_script('viewer_script', plugins_url("/includes/scripts/viewer.js", __FILE__));
         wp_enqueue_script('viewer_script');
         wp_localize_script('viewer_script', 'questionStyleTable', array(
-                'button_number_col' => $button_number_col,
-                'background_color_col' => $background_color_col,
-                'border_col' => $border_col,
-                'border_radius_col' => $border_radius_col,
-                'border_width_col' => $border_width_col,
-                'font_color_col' => $font_color_col,
-                'padding_col' => $padding_col,
-                'position_top_col' => $position_top_col,
-                'position_left_col' => $position_left_col,
-                'font_size_col' => $font_size_col
+                'questionStyleRows' => $questionStyleRows
             )
         );
     }
@@ -350,8 +327,10 @@ function create_question_style_table() {
 	{
 		$sql = "CREATE TABLE $tbl_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
+            number_of_answers tinytext NOT NULL,
             button_number tinytext NOT NULL,
             background_color tinytext NOT NULL,
+            button_text tinytext NOT NULL,
             border tinytext NOT NULL,
             border_radius tinytext NOT NULL,
             border_width tinytext NOT NULL,
