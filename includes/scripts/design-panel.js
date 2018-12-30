@@ -1,7 +1,3 @@
-//global variables
-var button_number = null;
-
-
 /**
  * a small function to show the buttons numbers DropDownList depends on the selected value 
  */
@@ -76,12 +72,30 @@ function removeNumList() {
  */
 var loadStyleOptionsTemplate = function () {
     var container = document.getElementById("questionStyleOption");
-    req = new XMLHttpRequest();
-    req.open("GET", "../../../web/app/plugins/rbb-quiz/includes/templates/question-style-form.html", false);
-    req.send(null);
-    container.innerHTML = req.responseText;
+    container.innerHTML = question_style_form;
+    // req = new XMLHttpRequest();
+    // req.open("GET", "../../../web/app/plugins/rbb-quiz/includes/templates/question-style-form.html", false);
+    // req.send(null);
+    // container.innerHTML = req.responseText;
     jscolor.installByClassName("jscolor");
+
+    var number_of_answers = $("#number_of_answers").val();
+    var button_number = $("#buttonNum").val();
+    questionStyleTable.questionStyleRows.forEach(function(v,i) {
+        if(number_of_answers == v.number_of_answers && button_number == v.button_number) {
+            document.getElementById("backgroundColor").value = v.background_color;
+            document.getElementById("buttonText").value = v.button_text;
+            document.getElementById("borderRadius").value = v.border_radius;
+            document.getElementById("borderWidth").value = v.border_width;
+            document.getElementById("fontColor").value = v.font_color;
+            document.getElementById("padding").value = v.padding;
+            document.getElementById("positionTop").value = v.position_top;
+            document.getElementById("positionLeft").value = v.position_left;
+            document.getElementById("fontSize").value = v.font_size;
+        }
+    });
 }
+
 
 /**
  * Submit ajax post request from question_style_form
@@ -90,10 +104,9 @@ function submitQuestionStyleForm() {
     $('#question_style_form').submit(function(e){
         e.preventDefault();
         var number_of_answers = $("#number_of_answers").val();
-        button_number = $("#buttonNum").val();
+        var button_number = $("#buttonNum").val();
         var background_color = $("#backgroundColor").val();
         var button_text = $("#buttonText").val();
-        var border = $('input[name=is_border]:checked').val();
         var border_radius = $("#borderRadius").val();
         var border_width = $("#borderWidth").val();
         var font_color = $("#fontColor").val();
@@ -111,7 +124,6 @@ function submitQuestionStyleForm() {
                 button_number: button_number,
                 background_color: background_color,
                 button_text: button_text,
-                border: border,
                 border_radius: border_radius,
                 border_width: border_width,
                 font_color: font_color,
@@ -134,3 +146,50 @@ function submitQuestionStyleForm() {
         });
     });
 };
+
+
+
+var question_style_form = 
+'<form class="form-horizontal" method="post" id="question_style_form">'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="backgroundColor">Background Color</label>'+
+        '<input id="backgroundColor" value="ffcc00" class="jscolor {width:243, height:150, position:\'right\',borderColor:\'#FFF\', insetColor:\'#FFF\', backgroundColor:\'#666\'}">'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="buttonText">Text</label>'+
+        '<input type="text" class="form-control" id="buttonText" placeholder="Button Text  ex.(A)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="borderRadius">Border Radius</label>'+
+        '<input type="text" class="form-control" id="borderRadius" placeholder="Border Radius  ex.(8px)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="borderWidth">Border Width</label>'+
+        '<input type="text" class="form-control" id="borderWidth" placeholder="Border Width  ex.(3px)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="fontColor">Font Color</label>'+
+        '<input id="fontColor" value="ffcc00" class="jscolor {width:243, height:150, position:\'right\',borderColor:\'#FFF\', insetColor:\'#FFF\', backgroundColor:\'#666\'}">'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="padding">Padding</label>'+
+        '<input type="text" class="form-control" id="padding" placeholder="Padding Top and Left  ex.(20px 15px)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="positionTop">Position Top</label>'+
+        '<input type="text" value="450px" class="form-control" id="positionTop" placeholder="Position Top  ex.(350px)" required>'+
+        '<label for="positionLeft">Position Left</label>'+
+        '<input type="text" value="1050px" class="form-control" id="positionLeft" placeholder="Position Left  ex.(1070px)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="fontSize">Font Size</label>'+
+        '<input type="text" class="form-control" id="fontSize" placeholder="Font Size  ex.(16px)" required>'+
+    '</div>'+
+    '<div class="clearfix"></div>'+
+    '<input type="hidden" name="action" value="submit_question_style_form">'+
+    '<div class="form-group col-sm-10">'+
+        '<input type="submit" onclick="submitQuestionStyleForm()" name="btnSubmit" value="Submit Button Style" class="btn btn-primary">'+
+    '</div>'+
+    '<div class="msgDiv form-group col-sm-10"></div>'+
+'</form>'+
+'<div class="clearfix"></div>';

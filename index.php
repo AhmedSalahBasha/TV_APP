@@ -139,7 +139,6 @@ function submit_question_style_form() {
         $button_number = $_POST['button_number'];
         $background_color = $_POST['background_color'];
         $button_text = $_POST['button_text'];
-        $border = $_POST['border'];
         $border_radius = $_POST['border_radius'];
         $border_width = $_POST['border_width'];
         $font_color = $_POST['font_color'];
@@ -149,13 +148,10 @@ function submit_question_style_form() {
         $font_size = $_POST['font_size'];
         $tbl_name = $wpdb->prefix . 'question_style';
         try {
-            $rowResult = $wpdb->insert($tbl_name, 
+            $rowResult = $wpdb->update($tbl_name, 
                 array(
-                    'number_of_answers' => $number_of_answers,
-                    'button_number' => $button_number,
                     'background_color' => $background_color,
                     'button_text' => $button_text,
-                    'border' => $border,
                     'border_radius' => $border_radius,
                     'border_width' => $border_width,
                     'font_color' => $font_color,
@@ -163,6 +159,10 @@ function submit_question_style_form() {
                     'position_top' => $position_top,
                     'position_left' => $position_left,
                     'font_size' => $font_size,
+                ),
+                array(
+                    'number_of_answers' => $number_of_answers,
+                    'button_number' => $button_number,
                 ),
                 $format = NULL
             );
@@ -235,7 +235,6 @@ add_action('wp_footer', 'get_question_data');
  */
 function get_question_style() {
     if(is_page('RBB Quiz')) {   
-        echo "<p id='current'></p>";
         global $wpdb;
         // reading data from rbb_quiz_questions table in database
         $questionStyleRows = $wpdb->get_results("SELECT * FROM wp_question_style", ARRAY_A);
@@ -248,6 +247,23 @@ function get_question_style() {
     }
 }
 add_action('wp_footer', 'get_question_style');
+
+
+/**
+ * function to select the question style data from database and send this data to Design Panel JS file
+ */
+function loadQuestionStyleData() {
+    global $wpdb;
+    // reading data from rbb_quiz_questions table in database
+    $questionStyleRows = $wpdb->get_results("SELECT * FROM wp_question_style", ARRAY_A);
+    wp_register_script('design_script', plugins_url("/includes/scripts/design-panel.js", __FILE__));
+    wp_enqueue_script('design_script');
+    wp_localize_script('design_script', 'questionStyleTable', array(
+            'questionStyleRows' => $questionStyleRows
+        )
+    );    
+}
+add_action('admin_footer', 'loadQuestionStyleData');
 
 
 /**
@@ -323,15 +339,13 @@ function create_question_style_table() {
    	global $wpdb;
     $tbl_name = $wpdb->prefix . 'question_style';
     $charset_collate = $wpdb->get_charset_collate();
-	if($wpdb->get_var("show tables like '$tbl_name'") != $tbl_name) 
-	{
+	if($wpdb->get_var("show tables like '$tbl_name'") != $tbl_name) {
 		$sql = "CREATE TABLE $tbl_name (
             id mediumint(9) NOT NULL AUTO_INCREMENT,
             number_of_answers tinytext NOT NULL,
             button_number tinytext NOT NULL,
             background_color tinytext NOT NULL,
             button_text tinytext NOT NULL,
-            border tinytext NOT NULL,
             border_radius tinytext NOT NULL,
             border_width tinytext NOT NULL,
             font_color tinytext NOT NULL,
@@ -346,6 +360,26 @@ function create_question_style_table() {
 	}
 }
 register_activation_hook(__FILE__,'create_question_style_table');
+
+
+function insertDefaultStylesData(){
+    global $wpdb;
+    $wpdb->query("
+        INSERT INTO wp_question_style 
+        (number_of_answers, button_number, background_color, button_text, border_radius, border_width, font_color, padding, position_top, position_left, font_size)
+        VALUES
+        ('4','1','FF990F','A','7px','2px','FBFFBC','3px 4px','350px','1050px','15px'),
+        ('4','2','FF990F','B','7px','2px','FBFFBC','3px 4px','450px','1050px','15px'),
+        ('4','3','FF990F','C','7px','2px','FBFFBC','3px 4px','550px','1050px','15px'),
+        ('4','4','FF990F','D','7px','2px','FBFFBC','3px 4px','650px','1050px','15px'),
+        ('3','1','FF990F','A','7px','2px','FBFFBC','3px 4px','450px','1050px','15px'),
+        ('3','2','FF990F','B','7px','2px','FBFFBC','3px 4px','550px','1050px','15px'),
+        ('3','3','FF990F','C','7px','2px','FBFFBC','3px 4px','650px','1050px','15px'),
+        ('2','1','FF990F','A','7px','2px','FBFFBC','3px 4px','500px','1050px','15px'),
+        ('2','2','FF990F','B','7px','2px','FBFFBC','3px 4px','600px','1050px','15px')
+    ");
+}
+register_activation_hook(__FILE__,'insertDefaultStylesData');
 
 
 /**
