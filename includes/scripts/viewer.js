@@ -23,6 +23,7 @@ var correctAns = null;
 var selectedAns = null;
 var questionRowIndex = null;
 var questionStyleRowIndex = null;
+var score = 0;
 
 function setVideoURL (videoUrl) {
     var vidObject = document.getElementsByClassName("video-wrapper")[0].firstChild;
@@ -35,7 +36,8 @@ function createScoreTemplate() {
     var mainDiv = document.createElement("div");
     mainDiv.classList.add("page-element");
     mainDiv.classList.add("text-content");
-    mainDiv.style.left = "1040px" 
+    mainDiv.id = "scoreTemplate";
+    mainDiv.style.left = "1000px" 
     mainDiv.style.top = "40px";
     mainDiv.style.width = "100px";
     mainDiv.style.height = "40px";
@@ -56,7 +58,7 @@ function createScoreTemplate() {
     child3Div.classList.add("not-scrolling");
 
     var child4p = document.createElement("p");
-    child4p.innerText = "Score 0/16";
+    child4p.innerText = "Score "+score+"/16";
 
     child3Div.appendChild(child4p);
     child2Div.appendChild(child3Div);
@@ -302,7 +304,10 @@ function compareEndTime() {
         if (end_time == seconds) {
             console.log("questionRowID >> ", questionRowIndex);
             if (checkAnswer(questionRowIndex)) {
+                document.getElementById("scoreTemplate").remove();
                 console.log("True Answer!");
+                score = score + 1;
+                createScoreTemplate();
             } else {
                 console.log("Wrong Answer!");
             }
