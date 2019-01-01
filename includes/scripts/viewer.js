@@ -16,7 +16,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 // Global Variables 
 var seconds = 0, minutes = 0, hours = 0, t = 0;
-var btnIndex = 0, btnsList = null;
+var btnIndex = 0;
+var btnsList = null;
+var is_correct = false;
+var correctAns = null;
+var selectedAns = null;
+var questionRowIndex = null;
+var questionStyleRowIndex = null;
 
 function setVideoURL (videoUrl) {
     var vidObject = document.getElementsByClassName("video-wrapper")[0].firstChild;
@@ -60,18 +66,21 @@ function createScoreTemplate() {
 }
 
 
-function createToggleTrackingButtonTemplate(id, top, text) {
+function createToggleTrackingButtonTemplate(id, bgColor, txt, btnWidth, btnHeight, bColor, bRadius, bWidth, fColor, padding, pTop, pLeft, fSize) {
     var mainContainer = document.getElementsByClassName("page-elements-container")[0];
     var mainDiv = document.createElement("div");
     mainDiv.classList.add("page-element");
     mainDiv.classList.add("toggletracking-component");
-    mainDiv.style.left = "1160px";
-    mainDiv.style.top = top;
-    mainDiv.style.width = "60px";
-    mainDiv.style.height = "40px";
+    mainDiv.style.backgroundColor = bgColor;
+    mainDiv.style.borderRadius = bRadius;
+    mainDiv.style.borderWidth = bWidth;
+    mainDiv.style.left = pLeft;
+    mainDiv.style.top = pTop;
+    mainDiv.style.width = btnWidth;
+    mainDiv.style.height = btnHeight;
     mainDiv.style.zIndex = "1000";
     mainDiv.style.border = "solid";
-    mainDiv.style.borderColor = "red";
+    mainDiv.style.borderColor = bColor;
     mainDiv.style.display = "block";
     mainDiv.id = id;
 
@@ -96,7 +105,10 @@ function createToggleTrackingButtonTemplate(id, top, text) {
     // child4Li.style.borderColor = "yellow";
 
     var child5Span = document.createElement("span");
-    child5Span.innerText = text;
+    child5Span.innerText = txt;
+    child5Span.style.color = fColor;
+    child5Span.style.padding = padding;
+    child5Span.style.fontSize = fSize;
 
     // child4Li.appendChild(child5Span);
     // child3Ul.appendChild(child4Li);
@@ -140,7 +152,7 @@ function createTimerVideo() {
     function timer() {
         t = setTimeout(add, 1000);
         compareStartTime();
-        compareEndTime();
+        // compareEndTime();
     }
     timer();
 }
@@ -201,8 +213,8 @@ function createTimer() {
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var seconds = Math.floor((distance % (1000 * 60)) / 1000);
         document.getElementById("timer").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-        compareStartTime();
-        compareEndTime();
+        // compareStartTime();
+        // compareEndTime();
         if (distance < 0) {
             clearInterval(x);
             document.getElementById("timer").innerHTML = "EXPIRED";
@@ -253,61 +265,87 @@ function createVideoTemplate(url) {
 
 
 function compareStartTime() {
-    for(var i = 0; i < questionsTable.questionsRows.length; i++) {
-        if (questionsTable.questionsRows[i].start_time == seconds) {
-            var questionNumOfAns = questionsTable.questionsRows[i].number_of_answers;
-            questionStyleTable.questionStyleRows.forEach(function(v, i) {
-                if (v.number_of_answers == questionNumOfAns) {
-                    createToggleTrackingButtonTemplate("id"+v.id, v.position_top, " A");
+    questionsTable.questionsRows.forEach(function(v1, i1) {
+        if (v1.start_time == seconds) {
+            questionRowIndex = i1;
+            var questionNumOfAns = v1.number_of_answers;
+            questionStyleTable.questionStyleRows.forEach(function(v2, i2) {
+                if (v2.number_of_answers == questionNumOfAns) {
+                    questionStyleRowIndex = i2;
+                    createToggleTrackingButtonTemplate(
+                        "btn_id"+i2, 
+                        v2.background_color, 
+                        v2.button_text, 
+                        v2.button_width, 
+                        v2.button_height, 
+                        v2.border_color, 
+                        v2.border_radius, 
+                        v2.border_width, 
+                        v2.font_color, 
+                        v2.padding, 
+                        v2.position_top, 
+                        v2.position_left, 
+                        v2.font_size
+                    );
                 }
-            })
+            });
+            btnsList = document.getElementsByClassName("toggletracking-component");
         }
-    }
+    });
+    compareEndTime();
 }
 
 
 function compareEndTime() {
-    for(var i = 0; i < questionsTable.questionsRows.length; i++) {
-        if (questionsTable.questionsRows[i].end_time == seconds) {
-            for (var j = 0; j < document.getElementsByClassName("toggletracking-component").length; j++) {
-                document.getElementsByClassName("toggletracking-component")[j].remove();
-            }
-            if (checkAnswer(i)) {
+    if (document.getElementsByClassName("toggletracking-component").length > 0) {
+        var end_time = questionsTable.questionsRows[questionRowIndex].end_time;
+        if (end_time == seconds) {
+            console.log("questionRowID >> ", questionRowIndex);
+            if (checkAnswer(questionRowIndex)) {
                 console.log("True Answer!");
             } else {
                 console.log("Wrong Answer!");
             }
-            resetButton();
-        }
+            for (var i = 0; i < 9; i++) {
+                if (document.getElementById("btn_id"+i)) {
+                    document.getElementById("btn_id"+i).remove();
+                }
+            }
+            btnsList = [];
+            btnIndex = null;
+            is_correct = false;
+            selectedAns = null;
+            correctAns = null;
+            questionRowIndex = null;
+        }    
     }
 }
 
 
-function navigateButtons(e) {
-    btnsList = document.getElementsByClassName("toggletracking-component");
+function navigateButtons() {
     document.addEventListener('keyup', function(e) {
-        if (e.keyCode == 38) { //up
-            if (btnIndex == 1) {
-                return;
+        btnUp: if (e.keyCode == 38) { //up
+            if (btnIndex == 0) {
+                break btnUp;
             }
             btnIndex--;
-        } else if (e.keyCode == 40) { //down
-            if (btnIndex >= btnsList.length) {
-                return;
+        }
+        btnDown: if (e.keyCode == 40) { //down
+            if (btnIndex >= btnsList.length-1) {
+                break btnDown;
             }
             btnIndex++;
         }
-
         for (var i = 0; i < btnsList.length; i++) {
-            btnsList[i].style.borderColor = "red";
             btnsList[i].blur();
             if (btnsList[i].classList.contains("btnActive")) {
-                btnsList[i].classList.remove("btnActive");    
+                btnsList[i].classList.remove("btnActive");   
+                btnsList[i].style.borderColor = questionStyleTable.questionStyleRows[questionStyleRowIndex].border_color; 
             }
         }
-        btnsList[btnIndex-1].focus();
-        btnsList[btnIndex-1].style.borderColor = "yellow";
-        btnsList[btnIndex-1].classList.add("btnActive");
+        btnsList[btnIndex].focus();
+        btnsList[btnIndex].style.borderColor = "yellow";
+        btnsList[btnIndex].classList.add("btnActive");
     }); 
 }
 
@@ -316,50 +354,39 @@ function chooseAnswer() {
     document.addEventListener('keyup', function (e) {
         if (e.keyCode == 13) {
             for (var i = 0; i < btnsList.length; i++) {
-                btnsList[i].style.backgroundColor = "transparent";
+                btnsList[i].style.backgroundColor = questionsTable.questionsRows[1].background_color;
                 if (btnsList[i].classList.contains("btnSelected")) {
                     btnsList[i].classList.remove("btnSelected"); 
                 }
             }
-            btnsList[btnIndex-1].style.backgroundColor = "green";
-            btnsList[btnIndex-1].classList.add("btnSelected");
+            btnsList[btnIndex].style.backgroundColor = "green";
+            btnsList[btnIndex].classList.add("btnSelected");
         }
     })
 }
 
 
-function resetButton() {
+function checkAnswer(index) {
+    correctAns = questionsTable.questionsRows[index].correct_ans;
+
     for (var i = 0; i < btnsList.length; i++) {
-        if (btnsList[i].classList.contains("btnSelected")) {
-            btnsList[i].classList.remove("btnSelected"); 
-        }
-        if (btnsList[i].classList.contains("btnActive")) {
-            btnsList[i].classList.remove("btnActive");    
-        }
-        btnsList[i].style.backgroundColor = "transparent";
-        btnsList[i].style.borderColor = "red";
-    }
-}
-
-
-function checkAnswer(i) {
-    var is_correct = false;
-    var correctAns = questionsTable.questionsRows[i].correct_ans;
-    var selectedAnswer = null;
-
-    for (var j = 0; j < btnsList.length; j++) {
-        if (btnsList[j].id == "id1" && btnsList[j].classList.contains("btnSelected")) {
-            selectedAnswer = "A";
-        } else if (btnsList[j].id == "id2" && btnsList[j].classList.contains("btnSelected")) {
-            selectedAnswer = "B";
-        } else if (btnsList[j].id == "id3" && btnsList[j].classList.contains("btnSelected")) {
-            selectedAnswer = "C";
-        } else if (btnsList[j].id == "id4" && btnsList[j].classList.contains("btnSelected")) {
-            selectedAnswer = "D";
+        if (btnsList[btnIndex] == btnsList[0]) {
+            selectedAns = "A";
+        } else if (btnsList[btnIndex] == btnsList[1]) {
+            selectedAns = "B";
+        } else if (btnsList[btnIndex] == btnsList[2]) {
+            selectedAns = "C";
+        } else if (btnsList[btnIndex] == btnsList[3]) {
+            selectedAns = "D";
         }
     }
-    if (correctAns == selectedAnswer) {
+
+    if (correctAns == selectedAns) {
         is_correct = true;
     }
+    console.log("ButtonIndex >> ", btnIndex);
+    console.log("selectedAnswer: ", selectedAns);
+    console.log("correctAnswer: ", correctAns);
+    console.log("index: ", index);
     return is_correct;
 }

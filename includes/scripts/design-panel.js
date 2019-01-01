@@ -85,8 +85,11 @@ var loadStyleOptionsTemplate = function () {
         if(number_of_answers == v.number_of_answers && button_number == v.button_number) {
             document.getElementById("backgroundColor").value = v.background_color;
             document.getElementById("buttonText").value = v.button_text;
+            document.getElementById("buttonWidth").value = v.button_width;
+            document.getElementById("buttonHeight").value = v.button_height;
             document.getElementById("borderRadius").value = v.border_radius;
             document.getElementById("borderWidth").value = v.border_width;
+            document.getElementById("borderColor").value = v.border_color;
             document.getElementById("fontColor").value = v.font_color;
             document.getElementById("padding").value = v.padding;
             document.getElementById("positionTop").value = v.position_top;
@@ -107,8 +110,11 @@ function submitQuestionStyleForm() {
         var button_number = $("#buttonNum").val();
         var background_color = $("#backgroundColor").val();
         var button_text = $("#buttonText").val();
+        var button_width = $("#buttonWidth").val();
+        var button_height = $("#buttonHeight");
         var border_radius = $("#borderRadius").val();
         var border_width = $("#borderWidth").val();
+        var border_color = $("#borderColor").val();
         var font_color = $("#fontColor").val();
         var padding = $("#padding").val();
         var position_top = $("#positionTop").val();
@@ -124,8 +130,11 @@ function submitQuestionStyleForm() {
                 button_number: button_number,
                 background_color: background_color,
                 button_text: button_text,
+                button_width: button_width,
+                button_height: button_height,
                 border_radius: border_radius,
                 border_width: border_width,
+                border_color: border_color,
                 font_color: font_color,
                 padding: padding,
                 position_top: position_top,
@@ -157,15 +166,27 @@ var question_style_form =
     '</div>'+
     '<div class="form-group col-sm-10">'+
         '<label for="buttonText">Text</label>'+
-        '<input type="text" class="form-control" id="buttonText" placeholder="Button Text  ex.(A)" required>'+
+        '<input type="text" class="form-control" id="buttonText" placeholder="Button Text  eg.(A)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="buttonWidth">Button Width</label>'+
+        '<input type="text" class="form-control" id="buttonWidth" placeholder="Button Width  eg.(40px)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="buttonHeight">Button Height</label>'+
+        '<input type="text" class="form-control" id="buttonHeight" placeholder="Button Height  eg.(40px)" required>'+
     '</div>'+
     '<div class="form-group col-sm-10">'+
         '<label for="borderRadius">Border Radius</label>'+
-        '<input type="text" class="form-control" id="borderRadius" placeholder="Border Radius  ex.(8px)" required>'+
+        '<input type="text" class="form-control" id="borderRadius" placeholder="Border Radius  eg.(8px)" required>'+
     '</div>'+
     '<div class="form-group col-sm-10">'+
         '<label for="borderWidth">Border Width</label>'+
-        '<input type="text" class="form-control" id="borderWidth" placeholder="Border Width  ex.(3px)" required>'+
+        '<input type="text" class="form-control" id="borderWidth" placeholder="Border Width  eg.(3px)" required>'+
+    '</div>'+
+    '<div class="form-group col-sm-10">'+
+        '<label for="borderColor">Border Color</label>'+
+        '<input id="borderColor" value="ffcc00" class="jscolor {width:243, height:150, position:\'right\',borderColor:\'#FFF\', insetColor:\'#FFF\', backgroundColor:\'#666\'}">'+
     '</div>'+
     '<div class="form-group col-sm-10">'+
         '<label for="fontColor">Font Color</label>'+
@@ -177,13 +198,13 @@ var question_style_form =
     '</div>'+
     '<div class="form-group col-sm-10">'+
         '<label for="positionTop">Position Top</label>'+
-        '<input type="text" value="450px" class="form-control" id="positionTop" placeholder="Position Top  ex.(350px)" required>'+
+        '<input type="text" value="450px" class="form-control" id="positionTop" placeholder="Position Top  eg.(350px)" required>'+
         '<label for="positionLeft">Position Left</label>'+
-        '<input type="text" value="1050px" class="form-control" id="positionLeft" placeholder="Position Left  ex.(1070px)" required>'+
+        '<input type="text" value="1050px" class="form-control" id="positionLeft" placeholder="Position Left  eg.(1070px)" required>'+
     '</div>'+
     '<div class="form-group col-sm-10">'+
         '<label for="fontSize">Font Size</label>'+
-        '<input type="text" class="form-control" id="fontSize" placeholder="Font Size  ex.(16px)" required>'+
+        '<input type="text" class="form-control" id="fontSize" placeholder="Font Size  eg.(16px)" required>'+
     '</div>'+
     '<div class="clearfix"></div>'+
     '<input type="hidden" name="action" value="submit_question_style_form">'+

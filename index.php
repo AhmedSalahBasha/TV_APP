@@ -137,11 +137,14 @@ function submit_question_style_form() {
         global $wpdb;
         $number_of_answers = $_POST['number_of_answers'];
         $button_number = $_POST['button_number'];
-        $background_color = $_POST['background_color'];
+        $background_color = '#' . $_POST['background_color'];
         $button_text = $_POST['button_text'];
+        $button_width = $_POST['button_width'];
+        $button_heigth = $_POST['button_heigth'];
         $border_radius = $_POST['border_radius'];
         $border_width = $_POST['border_width'];
-        $font_color = $_POST['font_color'];
+        $border_color = '#' . $_POST['border_color'];
+        $font_color = '#' . $_POST['font_color'];
         $padding = $_POST['padding'];
         $position_top = $_POST['position_top'];
         $position_left = $_POST['position_left'];
@@ -152,8 +155,11 @@ function submit_question_style_form() {
                 array(
                     'background_color' => $background_color,
                     'button_text' => $button_text,
+                    'button_width' => $button_width,
+                    'button_heigth' => $button_heigth,
                     'border_radius' => $border_radius,
                     'border_width' => $border_width,
+                    'border_color' => $border_color,
                     'font_color' => $font_color,
                     'padding' => $padding,
                     'position_top' => $position_top,
@@ -346,8 +352,11 @@ function create_question_style_table() {
             button_number tinytext NOT NULL,
             background_color tinytext NOT NULL,
             button_text tinytext NOT NULL,
+            button_width tinytext NOT NULL,
+            button_height tinytext NOT NULL,
             border_radius tinytext NOT NULL,
             border_width tinytext NOT NULL,
+            border_color tinytext NOT NULL,
             font_color tinytext NOT NULL,
             padding tinytext NOT NULL,
             position_top tinytext NOT NULL,
@@ -366,17 +375,17 @@ function insertDefaultStylesData(){
     global $wpdb;
     $wpdb->query("
         INSERT INTO wp_question_style 
-        (number_of_answers, button_number, background_color, button_text, border_radius, border_width, font_color, padding, position_top, position_left, font_size)
+        (number_of_answers, button_number, background_color, button_text, button_width, button_height, border_radius, border_width, border_color, font_color, padding, position_top, position_left, font_size)
         VALUES
-        ('4','1','FF990F','A','7px','2px','FBFFBC','3px 4px','350px','1050px','15px'),
-        ('4','2','FF990F','B','7px','2px','FBFFBC','3px 4px','450px','1050px','15px'),
-        ('4','3','FF990F','C','7px','2px','FBFFBC','3px 4px','550px','1050px','15px'),
-        ('4','4','FF990F','D','7px','2px','FBFFBC','3px 4px','650px','1050px','15px'),
-        ('3','1','FF990F','A','7px','2px','FBFFBC','3px 4px','450px','1050px','15px'),
-        ('3','2','FF990F','B','7px','2px','FBFFBC','3px 4px','550px','1050px','15px'),
-        ('3','3','FF990F','C','7px','2px','FBFFBC','3px 4px','650px','1050px','15px'),
-        ('2','1','FF990F','A','7px','2px','FBFFBC','3px 4px','500px','1050px','15px'),
-        ('2','2','FF990F','B','7px','2px','FBFFBC','3px 4px','600px','1050px','15px')
+        ('4','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','350px','1050px','15px'),
+        ('4','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','450px','1050px','15px'),
+        ('4','3','#FF990F','C','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','550px','1050px','15px'),
+        ('4','4','#FF990F','D','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','650px','1050px','15px'),
+        ('3','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','450px','1050px','15px'),
+        ('3','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','550px','1050px','15px'),
+        ('3','3','#FF990F','C','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','650px','1050px','15px'),
+        ('2','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','500px','1050px','15px'),
+        ('2','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','600px','1050px','15px')
     ");
 }
 register_activation_hook(__FILE__,'insertDefaultStylesData');
