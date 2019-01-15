@@ -86,8 +86,10 @@ function submit_question_form() {
         $number = $_POST['number'];
         $number_of_answers = $_POST['number_of_answers'];
         $correct_ans = $_POST['correct_ans'];
-        $start_time = $_POST['start_time'];
-        $end_time = $_POST['end_time'];
+        $start_time_minute = $_POST['start_time_minute'];
+        $start_time_second = $_POST['start_time_second'];
+        $end_time_minute = $_POST['end_time_minute'];
+        $end_time_second = $_POST['end_time_second'];
         $cost = $_POST['cost'];
         $tbl_name = $wpdb->prefix . 'rbb_quiz_questions';
         try {
@@ -96,8 +98,10 @@ function submit_question_form() {
                     'number' => $number,
                     'number_of_answers' => $number_of_answers,
                     'correct_ans' => $correct_ans,
-                    'start_time' => $start_time,
-                    'end_time' => $end_time,
+                    'start_time_minute' => $start_time_minute,
+                    'start_time_second' => $start_time_second,
+                    'end_time_minute' => $end_time_minute,
+                    'end_time_second' => $end_time_second,
                     'cost' => $cost
                 ),
                 $format = NULL
@@ -325,8 +329,10 @@ function create_rbb_quiz_table() {
             number tinytext NOT NULL,
             number_of_answers tinytext NOT NULL,
             correct_ans tinytext NOT NULL,
-            start_time tinytext NOT NULL,
-            end_time tinytext NOT NULL,
+            start_time_minute tinytext NOT NULL,
+            start_time_second tinytext NOT NULL,
+            end_time_minute tinytext NOT NULL,
+            end_time_second tinytext NOT NULL,
             cost tinytext NOT NULL,
             PRIMARY KEY (id)
 		) $charset_collate;";

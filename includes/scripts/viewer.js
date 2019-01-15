@@ -268,7 +268,7 @@ function createVideoTemplate(url) {
 
 function compareStartTime() {
     questionsTable.questionsRows.forEach(function(v1, i1) {
-        if (v1.start_time == seconds) {
+        if (v1.start_time_minute == minutes && v1.start_time_second == seconds) {
             questionRowIndex = i1;
             var questionNumOfAns = v1.number_of_answers;
             questionStyleTable.questionStyleRows.forEach(function(v2, i2) {
@@ -300,8 +300,9 @@ function compareStartTime() {
 
 function compareEndTime() {
     if (document.getElementsByClassName("toggletracking-component").length > 0) {
-        var end_time = questionsTable.questionsRows[questionRowIndex].end_time;
-        if (end_time == seconds) {
+        var end_time_minute = questionsTable.questionsRows[questionRowIndex].end_time_minute;
+        var end_time_second = questionsTable.questionsRows[questionRowIndex].end_time_second;
+        if (end_time_minute == minutes && end_time_second == seconds) {
             console.log("questionRowID >> ", questionRowIndex);
             if (checkAnswer(questionRowIndex)) {
                 document.getElementById("scoreTemplate").remove();

@@ -8,8 +8,10 @@ $(document).ready(function() {
         var number = $("#number").val();
         var number_of_answers = $("#number_of_answers").val();
         var correct_ans = $('input[name=correct_ans]:checked').val();
-        var start_time = $("#start_time").val();
-        var end_time = $("#end_time").val();
+        var start_time_minute = $("#start_time_minute").val();
+        var start_time_second = $("#start_time_second").val();
+        var end_time_minute = $("#end_time_minute").val();
+        var end_time_second = $("#end_time_second").val();
         var cost = $("#cost").val();
 
         $.ajax({ 
@@ -20,8 +22,10 @@ $(document).ready(function() {
                 number: number,
                 number_of_answers: number_of_answers,
                 correct_ans: correct_ans,
-                start_time: start_time,
-                end_time: end_time,
+                start_time_minute: start_time_minute,
+                start_time_second: start_time_second,
+                end_time_minute: end_time_minute,
+                end_time_second: end_time_second,
                 cost: cost
             },
             url: ajaxurl,
