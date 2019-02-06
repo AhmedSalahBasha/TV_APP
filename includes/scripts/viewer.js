@@ -96,24 +96,18 @@ function createToggleTrackingButtonTemplate(id, bgColor, txt, btnWidth, btnHeigh
     var child2Div = document.createElement("div");
     child2Div.classList.add("page-element-content");
     child2Div.classList.add("toggle-tracking-content");
+    child2Div.style.textAlign = "center";
 
-    // var child3Ul = document.createElement("ul");
-    // child3Ul.classList.add("menu-component");
-    // child3Ul.classList.add("horizontal-menu-component");
-
-    // var child4Li = document.createElement("li");
-    // child4Li.classList.add("menu-item");
-    // child4Li.style.border = "solid";
-    // child4Li.style.borderColor = "yellow";
-
-    var child5Span = document.createElement("span");
+    var child5Span = document.createElement("h5");
     child5Span.innerText = txt;
     child5Span.style.color = fColor;
-    child5Span.style.padding = padding;
+    // child5Span.style.padding = padding;
     child5Span.style.fontSize = fSize;
+    child5Span.style.display = "block";
+    // child5Span.style.textAlign = "center";
+    child5Span.style.marginLeft = "13px";
+    // child5Span.style.paddingLeft = "12px";
 
-    // child4Li.appendChild(child5Span);
-    // child3Ul.appendChild(child4Li);
     child2Div.appendChild(child5Span);
     child1Div.appendChild(child2Div);
     mainDiv.appendChild(child1Div);
@@ -198,6 +192,7 @@ function createTimerVideoTemplate() {
     child1Div.appendChild(child2Div);
     mainDiv.appendChild(child1Div);
     mainContainer.appendChild(mainDiv);
+    mainDiv.style.display = "none"; 
 }
 
 
@@ -360,7 +355,7 @@ function chooseAnswer() {
     document.addEventListener('keyup', function (e) {
         if (e.keyCode == 13) {
             for (var i = 0; i < btnsList.length; i++) {
-                btnsList[i].style.backgroundColor = questionsTable.questionsRows[1].background_color;
+                btnsList[i].style.backgroundColor = questionStyleTable.questionStyleRows[questionStyleRowIndex].background_color;
                 if (btnsList[i].classList.contains("btnSelected")) {
                     btnsList[i].classList.remove("btnSelected"); 
                 }
@@ -390,9 +385,5 @@ function checkAnswer(index) {
     if (correctAns == selectedAns) {
         is_correct = true;
     }
-    console.log("ButtonIndex >> ", btnIndex);
-    console.log("selectedAnswer: ", selectedAns);
-    console.log("correctAnswer: ", correctAns);
-    console.log("index: ", index);
     return is_correct;
 }

@@ -383,15 +383,15 @@ function insertDefaultStylesData(){
         INSERT INTO wp_question_style 
         (number_of_answers, button_number, background_color, button_text, button_width, button_height, border_radius, border_width, border_color, font_color, padding, position_top, position_left, font_size)
         VALUES
-        ('4','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','350px','1050px','15px'),
-        ('4','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','450px','1050px','15px'),
-        ('4','3','#FF990F','C','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','550px','1050px','15px'),
-        ('4','4','#FF990F','D','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','650px','1050px','15px'),
-        ('3','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','450px','1050px','15px'),
-        ('3','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','550px','1050px','15px'),
-        ('3','3','#FF990F','C','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','650px','1050px','15px'),
-        ('2','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','500px','1050px','15px'),
-        ('2','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','600px','1050px','15px')
+        ('4','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','350px','1050px','35px'),
+        ('4','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','450px','1050px','35px'),
+        ('4','3','#FF990F','C','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','550px','1050px','35px'),
+        ('4','4','#FF990F','D','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','650px','1050px','35px'),
+        ('3','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','450px','1050px','35px'),
+        ('3','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','550px','1050px','35px'),
+        ('3','3','#FF990F','C','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','650px','1050px','35px'),
+        ('2','1','#FF990F','A','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','500px','1050px','35px'),
+        ('2','2','#FF990F','B','60px','40px','7px','2px','#3A3737','#FBFFBC','3px 4px','600px','1050px','35px')
     ");
 }
 register_activation_hook(__FILE__,'insertDefaultStylesData');
